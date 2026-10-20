@@ -1,44 +1,63 @@
+/* eslint-disable @next/next/no-img-element -- the cover uses a signed, short-lived URL */
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { cache } from "react";
+import { GuestActions } from "@/components/guest/guest-actions";
 import { LocaleToggle } from "@/components/locale-toggle";
+import { getPathname } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { formatEventDate } from "@/lib/dates";
-import { db } from "@/server/db";
+import { readGuestContext } from "@/server/guests/context";
+import { MEDIA_URL_TTL_SEC, storage } from "@/server/media/storage";
+import { ENABLED_KINDS } from "@/server/uploads/service";
 
-const getEvent = cache((slug: string) =>
-  db.event.findUnique({
-    where: { slug },
-    select: { title: true, hostNames: true, startsAt: true, venueName: true, welcomeText: true, themeColor: true, status: true },
-  }),
-);
+const getContext = cache((slug: string) => readGuestContext(slug));
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const event = await getEvent(slug);
-  return event ? { title: event.hostNames, robots: { index: false } } : {};
+  const context = await getContext(slug);
+  return context ? { title: context.event.hostNames, robots: { index: false, follow: false } } : {};
 }
 
 export default async function GuestEventPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const event = await getEvent(slug);
-  if (!event || event.status === "DRAFT") notFound();
-  const [t, tc] = await Promise.all([getTranslations("event"), getTranslations("common")]);
+  const context = await getContext(slug);
+  if (!context) notFound();
+  const { event, guest, pinOk } = context;
+  const [t, tc, messages] = await Promise.all([getTranslations("event"), getTranslations("common"), getMessages()]);
+  const coverUrl = event.coverKey && pinOk ? await storage().getDownloadUrl(event.coverKey, { expiresInSec: MEDIA_URL_TTL_SEC }) : null;
+  const galleryHref = event.galleryVisibility === "GUESTS" ? getPathname({ href: `/${slug}/gallery`, locale: locale as Locale }) : null;
+
   return (
     <main className="mx-auto flex min-h-dvh max-w-md flex-col px-4 pb-10">
       <div className="flex justify-end py-3">
         <LocaleToggle locale={locale as Locale} label={tc("switchTo")} />
       </div>
-      <section className="rounded-3xl p-8 text-center text-white" style={{ backgroundColor: event.themeColor }}>
-        <p className="text-sm uppercase tracking-widest opacity-80">{t("welcome")}</p>
-        <h1 className="mt-3 font-serif text-4xl">{event.hostNames}</h1>
-        <p className="mt-2 opacity-90">{event.title}</p>
-        <p className="mt-4 text-sm opacity-90">{formatEventDate(event.startsAt, locale as Locale)}</p>
-        {event.venueName ? <p className="text-sm opacity-90">{event.venueName}</p> : null}
+      <section className="overflow-hidden rounded-3xl text-center text-white shadow-sm" style={{ backgroundColor: event.themeColor }}>
+        {coverUrl ? <img src={coverUrl} alt="" className="aspect-[16/10] w-full object-cover" /> : null}
+        <div className="p-8">
+          <p className="text-sm tracking-widest uppercase opacity-80">{t("welcome")}</p>
+          <h1 className="mt-3 font-serif text-4xl">{event.hostNames}</h1>
+          <p className="mt-2 opacity-90">{event.title}</p>
+          <p className="mt-4 text-sm opacity-90">{formatEventDate(event.startsAt, locale as Locale)}</p>
+          {event.venueName ? <p className="text-sm opacity-90">{event.venueName}</p> : null}
+        </div>
       </section>
-      {event.welcomeText ? <p className="mt-6 text-center text-lg">{event.welcomeText}</p> : null}
+      {event.welcomeText && pinOk ? <p className="mt-6 text-center text-lg">{event.welcomeText}</p> : null}
+      {event.plan.includesGallery ? (
+        <NextIntlClientProvider messages={{ guest: messages.guest }}>
+          <GuestActions
+            slug={slug}
+            needsPin={!pinOk}
+            initialName={guest?.displayName ?? null}
+            galleryHref={pinOk ? galleryHref : null}
+            features={{ video: ENABLED_KINDS.includes("VIDEO"), voice: ENABLED_KINDS.includes("VOICE") }}
+          />
+        </NextIntlClientProvider>
+      ) : null}
     </main>
   );
 }

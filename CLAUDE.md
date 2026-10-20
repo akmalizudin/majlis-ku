@@ -106,7 +106,7 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 | --- | --- |
 | 0 Collaboration scaffolding (handbooks, playbook, skills, CI, MCP) | done |
 | 1 Setup: scaffold, schema, auth, i18n, base layout | done |
-| 2 Guestbook MVP | not started |
+| 2 Guestbook MVP: events, QR and stand PDF, guest photo and wish upload, host and guest gallery, PIN | done |
 | 3 Media+ (video, voice, thumbnails, realtime, slideshow) | not started |
 | 4 Moderation and export | not started |
 | 5 E-card and RSVP | not started |
@@ -133,6 +133,8 @@ node scripts/skills.mjs check  # fail if the twins differ
 ```
 
 Sign in locally: enter any email on `/signin`; with `EMAIL_SERVER` empty, the magic link is printed in the `npm run dev` log and appended to `.data/dev-mail.log`. Emails in `ADMIN_EMAILS` (default `admin@majlisku.test`) become admins on sign-in.
+
+Try it on a phone on the same Wi-Fi: set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` in `.env` to `http://<your-LAN-IP>:3000`, run `npm run dev -- -H 0.0.0.0`, and scan the QR code from the event page.
 
 Gotchas: do not run `next dev` and `next build` at the same time (they share `.next/`); stop old `next start` processes before e2e, or Playwright reuses a stale server. If an installed PostgreSQL already uses port 5432, that is fine: the embedded one uses 5433.
 
