@@ -3,6 +3,7 @@
 A mobile-first platform for Malaysian events: a **QR digital guestbook** (guests scan one QR code and upload photos, videos, voice messages and wishes into a live gallery and venue slideshow, with no app and no account) and an **e-invitation card with RSVP**. Bahasa Melayu first, English second.
 
 Status: collaboration scaffolding is in place; Phase 1 (setup) is specced in [docs/specs/phase-1-setup.md](docs/specs/phase-1-setup.md) and waiting for approval. No app code yet.
+Status: Phase 1 (setup: schema, host sign-in, Bahasa Melayu and English, base layout) is done. See the status table in [CLAUDE.md](CLAUDE.md).
 
 ## Working on this repo
 
@@ -37,10 +38,12 @@ node scripts/skills.mjs check   # CI runs this
 ```
 
 ## Getting started (after Phase 1)
+## Getting started
 
 ```bash
 npm install
 cp .env.example .env
+cp .env.example .env         # then set AUTH_SECRET (npx auth secret) and HASH_SALT
 npm run db:start            # local PostgreSQL; keep it running in its own terminal
 npx prisma migrate dev
 npx prisma db seed

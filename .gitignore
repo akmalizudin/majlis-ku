@@ -36,3 +36,6 @@ npm-debug.log*
 # Agent worktrees and personal agent settings
 .worktrees/
 .claude/settings.local.json
+
+# Local database, media and dev mail (npm run db:start, local storage driver)
+.data/

@@ -8,24 +8,21 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
+    env:
+      # Placeholder values so the build can load src/lib/env.ts; CI never connects to a database.
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/ci
+      AUTH_SECRET: ci-only-auth-secret-not-for-production
+      HASH_SALT: ci-only-hash-salt
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
       - run: node scripts/skills.mjs check
-      # The app steps run once Phase 1 adds package.json and package-lock.json.
-      - if: hashFiles('package-lock.json') != ''
-        run: npm ci
-      - if: hashFiles('package-lock.json') != ''
-        run: npx prisma generate
-      - if: hashFiles('package-lock.json') != ''
-        run: npm run lint
-      - if: hashFiles('package-lock.json') != ''
-        run: npm run typecheck
-      - if: hashFiles('package-lock.json') != ''
-        run: npm test
-      - if: hashFiles('package-lock.json') != ''
-        run: npm run build
-        env:
-          SKIP_ENV_VALIDATION: "1"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

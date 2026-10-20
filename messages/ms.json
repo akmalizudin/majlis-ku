@@ -1,0 +1,58 @@
+{
+  "common": {
+    "brand": "Majlis Ku",
+    "language": "Bahasa",
+    "switchTo": "English",
+    "signIn": "Log masuk",
+    "signOut": "Log keluar",
+    "dashboard": "Papan pemuka",
+    "admin": "Admin",
+    "back": "Kembali",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "loading": "Memuatkan…"
+  },
+  "home": {
+    "metaTitle": "Majlis Ku — Buku tetamu digital & kad jemputan",
+    "metaDescription": "Tetamu imbas satu kod QR dan kongsi gambar, video, mesej suara dan ucapan. Tanpa aplikasi, tanpa akaun.",
+    "heroTitle": "Kenangan majlis anda, terkumpul di satu tempat",
+    "heroBody": "Tetamu imbas satu kod QR dan terus kongsi gambar, video, mesej suara dan ucapan. Tanpa aplikasi, tanpa akaun.",
+    "cta": "Cipta majlis anda",
+    "guestbookTitle": "Buku tetamu digital",
+    "guestbookBody": "Galeri langsung dan tayangan slaid untuk skrin di dewan.",
+    "ecardTitle": "Kad jemputan & RSVP",
+    "ecardBody": "Kongsi pautan di WhatsApp. Tetamu lihat butiran, peta, kiraan detik dan hantar RSVP."
+  },
+  "auth": {
+    "title": "Log masuk sebagai tuan rumah",
+    "subtitle": "Tetamu tidak perlu log masuk. Hanya tuan rumah majlis.",
+    "emailLabel": "E-mel",
+    "emailPlaceholder": "nama@contoh.com",
+    "sendLink": "Hantar pautan log masuk",
+    "or": "atau",
+    "google": "Teruskan dengan Google",
+    "checkEmailTitle": "Semak e-mel anda",
+    "checkEmailBody": "Kami telah menghantar pautan log masuk. Buka pautan itu pada peranti ini.",
+    "devHint": "Mod pembangunan: pautan dicetak dalam log pelayan.",
+    "error": "Log masuk gagal. Sila cuba lagi."
+  },
+  "dashboard": {
+    "title": "Majlis saya",
+    "empty": "Belum ada majlis. Cipta majlis pertama anda.",
+    "signedInAs": "Log masuk sebagai {email}"
+  },
+  "admin": {
+    "title": "Panel admin",
+    "forbiddenTitle": "Akses ditolak",
+    "forbiddenBody": "Halaman ini hanya untuk admin."
+  },
+  "event": {
+    "notFound": "Majlis tidak dijumpai",
+    "welcome": "Selamat datang"
+  },
+  "errors": {
+    "notFoundTitle": "Halaman tidak dijumpai",
+    "notFoundBody": "Pautan ini mungkin salah atau telah tamat.",
+    "home": "Ke laman utama"
+  }
+}

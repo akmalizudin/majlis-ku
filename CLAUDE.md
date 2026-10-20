@@ -105,31 +105,36 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 | Phase | State |
 | --- | --- |
 | 0 Collaboration scaffolding (handbooks, playbook, skills, CI, MCP) | done |
-| 1 Setup: scaffold, schema, auth, i18n, base layout | spec drafted, waiting for the developer's answers and approval |
+| 1 Setup: scaffold, schema, auth, i18n, base layout | done |
 | 2 Guestbook MVP | not started |
 | 3 Media+ (video, voice, thumbnails, realtime, slideshow) | not started |
 | 4 Moderation and export | not started |
 | 5 E-card and RSVP | not started |
-| 6 Payments and plans | not started |
+| 6 Payments and plans | deferred by the developer (plans and limits still enforced) |
 | 7 Admin panel | not started |
 | 8 Hardening | not started |
 
 ## Commands
 
-Phase 1 adds these to `package.json`. Until then only the skills commands work.
+First run: `npm install`, `cp .env.example .env` (fill `AUTH_SECRET` with `npx auth secret` and `HASH_SALT` with any long random string), then the commands below.
 
 ```bash
-npm install
-npm run dev                  # http://localhost:3000
+npm run db:start             # local PostgreSQL on port 5433 (embedded-postgres); keep it running in its own terminal
+npx prisma migrate dev       # apply migrations to the local database
+npx prisma db seed           # plans, templates, demo host, admin, demo event (safe to run twice)
+npm run dev                  # http://localhost:3000 ; the demo guest page is /demo-aisyah-daniel
 npm run lint
 npm run typecheck            # tsc --noEmit
 npm test                     # vitest run
-npm run test:e2e             # playwright test
-npx prisma migrate dev       # apply migrations to the local database
-npx prisma db seed           # plans, templates, a demo event
-node scripts/skills.mjs sync   # regenerate .codex/skills from .claude/skills
+npm run build                # also prints first-load JS per route (guest budget 150 KB)
+npm run test:e2e             # playwright test against `next start` on port 3100; run `npm run build` first
+node scripts/skills.mjs sync   # regenerate .codex/skills and .codex/agents
 node scripts/skills.mjs check  # fail if the twins differ
 ```
+
+Sign in locally: enter any email on `/signin`; with `EMAIL_SERVER` empty, the magic link is printed in the `npm run dev` log and appended to `.data/dev-mail.log`. Emails in `ADMIN_EMAILS` (default `admin@majlisku.test`) become admins on sign-in.
+
+Gotchas: do not run `next dev` and `next build` at the same time (they share `.next/`); stop old `next start` processes before e2e, or Playwright reuses a stale server. If an installed PostgreSQL already uses port 5432, that is fine: the embedded one uses 5433.
 
 ## Rules
 

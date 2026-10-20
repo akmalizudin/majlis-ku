@@ -1,0 +1,58 @@
+{
+  "common": {
+    "brand": "Majlis Ku",
+    "language": "English",
+    "switchTo": "Bahasa Melayu",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading…"
+  },
+  "home": {
+    "metaTitle": "Majlis Ku — Digital guestbook & e-invitations",
+    "metaDescription": "Guests scan one QR code and share photos, videos, voice messages and wishes. No app, no account.",
+    "heroTitle": "Every memory of your event, in one place",
+    "heroBody": "Guests scan one QR code and share photos, videos, voice messages and wishes. No app, no account.",
+    "cta": "Create your event",
+    "guestbookTitle": "Digital guestbook",
+    "guestbookBody": "A live gallery and a slideshow for the screen at the venue.",
+    "ecardTitle": "E-invitation & RSVP",
+    "ecardBody": "Share a link on WhatsApp. Guests see the details, map and countdown, and RSVP."
+  },
+  "auth": {
+    "title": "Sign in as a host",
+    "subtitle": "Guests never need to sign in. Only event hosts do.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "name@example.com",
+    "sendLink": "Email me a sign-in link",
+    "or": "or",
+    "google": "Continue with Google",
+    "checkEmailTitle": "Check your email",
+    "checkEmailBody": "We sent you a sign-in link. Open it on this device.",
+    "devHint": "Development mode: the link is printed in the server log.",
+    "error": "Sign-in failed. Please try again."
+  },
+  "dashboard": {
+    "title": "My events",
+    "empty": "No events yet. Create your first one.",
+    "signedInAs": "Signed in as {email}"
+  },
+  "admin": {
+    "title": "Admin panel",
+    "forbiddenTitle": "Access denied",
+    "forbiddenBody": "This page is for admins only."
+  },
+  "event": {
+    "notFound": "Event not found",
+    "welcome": "Welcome"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "This link may be wrong or has expired.",
+    "home": "Go to home page"
+  }
+}

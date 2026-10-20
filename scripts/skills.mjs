@@ -72,8 +72,9 @@ function skillNames(base) {
     .sort();
 }
 
+// Line endings and the final newline are normalised, so an editor's save settings never break parity.
 function read(path) {
-  return readFileSync(path, "utf8").replace(/\r\n/g, "\n");
+  return `${readFileSync(path, "utf8").replace(/\r\n/g, "\n").trimEnd()}\n`;
 }
 
 // The SKILL.md text and openai.yaml text the Codex twin must have for a Claude skill.

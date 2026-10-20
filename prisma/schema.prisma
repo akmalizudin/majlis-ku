@@ -1,0 +1,348 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enums ----------
+
+enum UserRole {
+  HOST
+  ADMIN
+}
+
+enum EventMemberRole {
+  OWNER
+  COHOST
+}
+
+enum EventType {
+  WEDDING
+  BIRTHDAY
+  CORPORATE
+  PARTY
+  OTHER
+}
+
+enum EventStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED // retention ended, media purged
+}
+
+enum GalleryVisibility {
+  PRIVATE // host and co-hosts only (default)
+  GUESTS  // anyone with the event link (and PIN, if set)
+}
+
+enum Locale {
+  ms
+  en
+}
+
+enum UploadKind {
+  PHOTO
+  VIDEO
+  VOICE
+}
+
+enum UploadStatus {
+  PENDING    // presigned URL issued, object not confirmed yet
+  PROCESSING // object confirmed, thumbnail or transcode running
+  READY
+  FAILED
+}
+
+enum ModerationState {
+  VISIBLE
+  PENDING_APPROVAL // event has requireApproval on
+  HIDDEN
+}
+
+enum PlanCode {
+  FREE
+  ECARD
+  PREMIUM
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// ---------- Auth (Auth.js Prisma adapter) ----------
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  role          UserRole      @default(HOST)
+  locale        Locale        @default(ms)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  memberships   EventMember[]
+  payments      Payment[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------- Plans and templates (admin-editable) ----------
+
+model Plan {
+  id                String   @id @default(cuid())
+  code              PlanCode @unique
+  nameMs            String
+  nameEn            String
+  priceSen          Int      // 0 for Free; 4000 = RM 40.00
+  includesGallery   Boolean
+  includesEcard     Boolean
+  uploadLimit       Int?     // null = unlimited (fair use)
+  videoAllowed      Boolean
+  maxVideoSeconds   Int?
+  maxUploadBytes    BigInt   // per file
+  storageLimitBytes BigInt?  // null = fair use
+  retentionDays     Int
+  active            Boolean  @default(true)
+  sortOrder         Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  events   Event[]
+  payments Payment[]
+}
+
+model Template {
+  id         String   @id @default(cuid())
+  code       String   @unique // e.g. "classic-songket"
+  nameMs     String
+  nameEn     String
+  previewKey String?  // object key of the preview image
+  defaults   Json     // default text, colours, layout options
+  premium    Boolean  @default(false)
+  active     Boolean  @default(true)
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  cards ECard[]
+}
+
+// ---------- Events ----------
+
+model Event {
+  id                String            @id @default(cuid())
+  slug              String            @unique // used in /{slug} and the QR code
+  type              EventType         @default(WEDDING)
+  status            EventStatus       @default(DRAFT)
+  title             String
+  hostNames         String            // e.g. "Aisyah & Daniel"
+  startsAt          DateTime          // stored UTC, shown in timezone
+  endsAt            DateTime?
+  timezone          String            @default("Asia/Kuala_Lumpur")
+  venueName         String?
+  venueAddress      String?
+  googleMapsUrl     String?
+  wazeUrl           String?
+  coverKey          String?           // object key of the cover photo
+  themeColor        String            @default("#8B5E3C")
+  welcomeText       String?
+  defaultLocale     Locale            @default(ms)
+  galleryVisibility GalleryVisibility @default(PRIVATE)
+  requireApproval   Boolean           @default(false)
+  pinHash           String?           // optional event PIN, hashed
+  planId            String
+  planActivatedAt   DateTime?
+  purgeAt           DateTime?         // set from plan retention; purge job deletes media after this
+  uploadCount       Int               @default(0)
+  storageBytes      BigInt            @default(0)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  plan     Plan          @relation(fields: [planId], references: [id])
+  members  EventMember[]
+  guests   Guest[]
+  uploads  Upload[]
+  wishes   Wish[]
+  rsvps    Rsvp[]
+  card     ECard?
+  payments Payment[]
+
+  @@index([status, purgeAt])
+}
+
+model EventMember {
+  eventId   String
+  userId    String
+  role      EventMemberRole
+  createdAt DateTime        @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, userId])
+  @@index([userId])
+}
+
+// A guest has no account: a display name plus a device token cookie, scoped to one event.
+model Guest {
+  id              String   @id @default(cuid())
+  eventId         String
+  displayName     String
+  deviceTokenHash String   // hash of the cookie token; never the raw token
+  createdAt       DateTime @default(now())
+
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  uploads Upload[]
+  wishes  Wish[]
+
+  @@unique([eventId, deviceTokenHash])
+}
+
+// ---------- Guestbook content ----------
+
+model Upload {
+  id           String          @id @default(cuid())
+  eventId      String
+  guestId      String?         // null if the guest record was removed
+  guestName    String          // snapshot at upload time, for search and export
+  kind         UploadKind
+  status       UploadStatus    @default(PENDING)
+  moderation   ModerationState @default(VISIBLE)
+  objectKey    String          @unique // original, private
+  thumbKey     String?
+  displayKey   String?         // web-friendly version (EXIF stripped image, transcoded voice)
+  mimeType     String
+  sizeBytes    BigInt
+  durationSec  Int?            // video and voice
+  width        Int?
+  height       Int?
+  caption      String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  event Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  guest Guest? @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  @@index([eventId, moderation, createdAt])
+  @@index([eventId, kind, createdAt])
+}
+
+model Wish {
+  id         String          @id @default(cuid())
+  eventId    String
+  guestId    String?
+  guestName  String
+  message    String          @db.Text
+  moderation ModerationState @default(VISIBLE)
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+
+  event Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  guest Guest? @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  @@index([eventId, moderation, createdAt])
+}
+
+// ---------- E-card and RSVP ----------
+
+model ECard {
+  id          String    @id @default(cuid())
+  eventId     String    @unique
+  templateId  String
+  content     Json      // text, photos (object keys), colours, countdown, map links
+  musicKey    String?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  event    Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id])
+}
+
+model Rsvp {
+  id              String   @id @default(cuid())
+  eventId         String
+  name            String
+  phone           String?  // optional, only if the host asks for it
+  attending       Boolean
+  pax             Int      @default(1)
+  message         String?  @db.Text
+  deviceTokenHash String?  // lets a guest edit their own RSVP
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, createdAt])
+}
+
+// ---------- Payments ----------
+
+model Payment {
+  id          String        @id @default(cuid())
+  eventId     String
+  userId      String
+  planId      String
+  amountSen   Int           // computed on the server from the plan
+  currency    String        @default("MYR")
+  provider    String        // "billplz" | "toyyibpay" | "stripe"
+  providerRef String?       @unique // bill or session id; makes webhooks idempotent
+  status      PaymentStatus @default(PENDING)
+  receiptNo   String?       @unique
+  paidAt      DateTime?
+  refundedAt  DateTime?
+  raw         Json?         // last verified provider payload
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Restrict)
+  plan  Plan  @relation(fields: [planId], references: [id])
+
+  @@index([status, createdAt])
+}

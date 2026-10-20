@@ -54,24 +54,27 @@ Next.js (App Router), TypeScript strict, Tailwind CSS, PWA. PostgreSQL with Pris
 
 ## Status
 
-Phase 0 (collaboration scaffolding) is done. Phase 1 (setup) has a drafted spec in `docs/specs/phase-1-setup.md`, waiting for the developer's answers and approval. Phases 2 to 8 have not started.
+Phases 0 (collaboration scaffolding) and 1 (setup: schema, auth, i18n, layout) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 2, 3, 4, 5, 7 and 8 have not started.
 
 ## Commands
 
-Phase 1 adds these to `package.json`. Until then only the skills commands work.
+First run: `npm install`, `cp .env.example .env` (fill `AUTH_SECRET` with `npx auth secret` and `HASH_SALT` with any long random string).
 
 ```bash
-npm install
-npm run dev
+npm run db:start             # local PostgreSQL on port 5433; keep it running
+npx prisma migrate dev
+npx prisma db seed           # safe to run twice
+npm run dev                  # http://localhost:3000 ; demo guest page /demo-aisyah-daniel
 npm run lint
 npm run typecheck
 npm test
-npm run test:e2e
-npx prisma migrate dev
-npx prisma db seed
+npm run build                # prints first-load JS per route
+npm run test:e2e             # needs a fresh `npm run build`
 node scripts/skills.mjs sync
 node scripts/skills.mjs check
 ```
+
+Local sign-in: with `EMAIL_SERVER` empty the magic link is printed in the server log and appended to `.data/dev-mail.log`; emails in `ADMIN_EMAILS` become admins. Do not run `next dev` and `next build` together (shared `.next/`), and stop old `next start` processes before e2e.
 
 ## Rules
 
