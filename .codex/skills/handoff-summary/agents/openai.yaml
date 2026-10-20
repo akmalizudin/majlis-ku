@@ -1,0 +1,7 @@
+interface:
+  display_name: "Handoff Summary"
+  short_description: "Use at the end of any AI-assisted implementation task in the Majlis Ku repo to produce the required honest..."
+  default_prompt: "Use $handoff-summary to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true

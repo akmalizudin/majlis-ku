@@ -1,0 +1,7 @@
+interface:
+  display_name: "Privacy PDPA Guard"
+  short_description: "Use when a Majlis Ku change stores, shows, exports, or deletes guest data or media (uploads, wishes, voice..."
+  default_prompt: "Use $privacy-pdpa-guard to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,31 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/skills.mjs check
+      # The app steps run once Phase 1 adds package.json and package-lock.json.
+      - if: hashFiles('package-lock.json') != ''
+        run: npm ci
+      - if: hashFiles('package-lock.json') != ''
+        run: npx prisma generate
+      - if: hashFiles('package-lock.json') != ''
+        run: npm run lint
+      - if: hashFiles('package-lock.json') != ''
+        run: npm run typecheck
+      - if: hashFiles('package-lock.json') != ''
+        run: npm test
+      - if: hashFiles('package-lock.json') != ''
+        run: npm run build
+        env:
+          SKIP_ENV_VALIDATION: "1"

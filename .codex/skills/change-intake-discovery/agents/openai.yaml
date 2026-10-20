@@ -1,0 +1,7 @@
+interface:
+  display_name: "Change Intake Discovery"
+  short_description: "Use when starting a non-trivial Majlis Ku change and the current behavior, owning module, contracts, or ris..."
+  default_prompt: "Use $change-intake-discovery to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true

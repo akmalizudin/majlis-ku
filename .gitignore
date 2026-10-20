@@ -1,0 +1,38 @@
+# Dependencies and builds
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Tests
+playwright-report/
+test-results/
+blob-report/
+
+# Env and secrets
+.env
+.env.*
+!.env.example
+
+# Local media and uploads (never commit guest media)
+/uploads/
+/tmp/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Logs
+npm-debug.log*
+*.log
+
+# Agent worktrees and personal agent settings
+.worktrees/
+.claude/settings.local.json

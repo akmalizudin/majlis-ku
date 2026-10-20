@@ -1,0 +1,26 @@
+{
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(npm run lint*)",
+      "Bash(npm run typecheck*)",
+      "Bash(npm test*)",
+      "Bash(npm run test*)",
+      "Bash(npm run build*)",
+      "Bash(npm run db:*)",
+      "Bash(npx vitest *)",
+      "Bash(npx playwright test*)",
+      "Bash(npx prisma validate*)",
+      "Bash(npx prisma format*)",
+      "Bash(npx prisma generate*)",
+      "Bash(npx prisma migrate status*)",
+      "Bash(node scripts/skills.mjs *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)"
+    ]
+  }
+}

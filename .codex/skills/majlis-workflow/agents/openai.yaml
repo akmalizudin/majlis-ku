@@ -1,0 +1,7 @@
+interface:
+  display_name: "Majlis Workflow"
+  short_description: "Use when starting any conversation or task in the Majlis Ku repo, before responding, reading files, plannin..."
+  default_prompt: "Use $majlis-workflow to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true

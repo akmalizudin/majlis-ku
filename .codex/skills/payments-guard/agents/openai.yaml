@@ -1,0 +1,7 @@
+interface:
+  display_name: "Payments Guard"
+  short_description: "Use when a Majlis Ku change touches prices, plans, plan limits or quotas, checkout, the PaymentProvider int..."
+  default_prompt: "Use $payments-guard to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true

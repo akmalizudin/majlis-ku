@@ -1,0 +1,7 @@
+interface:
+  display_name: "Doc Drift"
+  short_description: "Use when Majlis Ku code or behavior diverges from CLAUDE.md, AGENTS.md, playbook.md, docs/brief.md or a spe..."
+  default_prompt: "Use $doc-drift to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true

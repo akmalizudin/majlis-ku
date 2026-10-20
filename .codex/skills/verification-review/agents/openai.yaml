@@ -1,0 +1,7 @@
+interface:
+  display_name: "Verification Review"
+  short_description: "Use when Majlis Ku implementation or a test-only slice is complete and the change may be claimed fixed, com..."
+  default_prompt: "Use $verification-review to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true

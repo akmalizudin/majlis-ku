@@ -1,0 +1,7 @@
+interface:
+  display_name: "Completion Checkpoint"
+  short_description: "Use when Majlis Ku work is finished and verified and the next step is deciding what happens to the changes:..."
+  default_prompt: "Use $completion-checkpoint to handle this Majlis Ku task."
+
+policy:
+  allow_implicit_invocation: true
