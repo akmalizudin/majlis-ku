@@ -81,7 +81,8 @@
     "overview": "Overview",
     "gallery": "Gallery",
     "edit": "Settings",
-    "guestPage": "Guest page"
+    "guestPage": "Guest page",
+    "slideshow": "Slideshow"
   },
   "eventOverview": {
     "shareTitle": "Share with guests",
@@ -137,7 +138,9 @@
     "pending": "Waiting for approval",
     "hidden": "Hidden",
     "original": "Original file",
-    "voiceNote": "Voice message"
+    "voiceNote": "Voice message",
+    "live": "Live",
+    "newWord": "new"
   },
   "guest": {
     "pinTitle": "This event is protected by a PIN",
@@ -193,7 +196,21 @@
       "rate_limited": "Too fast. Please wait a moment.",
       "generic": "Something went wrong. Please try again."
     },
-    "comingSoon": "Coming soon"
+    "comingSoon": "Coming soon",
+    "videoPick": "Choose or record a video",
+    "videoHelp": "Up to {seconds} seconds.",
+    "videoTooLong": "This video is {seconds} seconds. The limit is {max} seconds.",
+    "premiumOnly": "Premium plan",
+    "voiceStart": "Start recording",
+    "voiceStop": "Stop",
+    "voiceRecording": "Recording… {time}",
+    "voiceRedo": "Record again",
+    "voiceSend": "Send voice message",
+    "voiceMax": "Up to 3 minutes.",
+    "voiceNoMic": "Recording is not available in this browser. Choose an audio file.",
+    "voiceDenied": "Microphone access was denied. Allow it or choose an audio file.",
+    "voicePick": "Choose an audio file",
+    "processingNote": "It is being processed and will appear in the gallery shortly."
   },
   "admin": {
     "title": "Admin panel",
@@ -208,5 +225,12 @@
     "notFoundTitle": "Page not found",
     "notFoundBody": "This link may be wrong or has expired.",
     "home": "Go to home page"
+  },
+  "slideshow": {
+    "title": "Slideshow",
+    "scan": "Scan to share photos & wishes",
+    "empty": "Waiting for the first memory…",
+    "fullscreen": "Full screen",
+    "by": "by {name}"
   }
 }

@@ -70,7 +70,8 @@ Do not change the stack or add a paid service without the developer's approval.
 | Auth (hosts only) | Auth.js v5: email magic link (printed to the server log in development) and Google sign-in |
 | Media storage | `StorageDriver` interface: `local` (disk, signed upload and download URLs served by the app) now; S3-compatible (R2 or S3) with direct-from-browser presigned uploads later |
 | Media processing | Client-side image compression; server-side thumbnails with `sharp`; capped video length and size; voice notes converted to a web-friendly format |
-| Realtime | Server-Sent Events for the live gallery and slideshow |
+| Realtime | Server-Sent Events for the live gallery and slideshow, from an in-process bus (`src/server/realtime/`); a shared bus replaces it with more than one server |
+| Video and voice | `ffmpeg-static`: H.264/AAC MP4 and poster for video, AAC `.m4a` for voice, processed in an in-process job queue; stuck jobs resume at start-up (`src/instrumentation.ts`) |
 | Payments | Deferred. Later: a Malaysian gateway (FPX, e-wallets, cards) behind a `PaymentProvider` interface, with verified webhooks |
 | Validation | Zod at every boundary |
 | Tests | Vitest for business logic, Playwright e2e for the guest upload flow and the payment flow (sandbox) |
@@ -107,7 +108,7 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 | 0 Collaboration scaffolding (handbooks, playbook, skills, CI, MCP) | done |
 | 1 Setup: scaffold, schema, auth, i18n, base layout | done |
 | 2 Guestbook MVP: events, QR and stand PDF, guest photo and wish upload, host and guest gallery, PIN | done |
-| 3 Media+ (video, voice, thumbnails, realtime, slideshow) | not started |
+| 3 Media+: video and voice (ffmpeg processing in the background), live gallery over SSE, venue slideshow | done |
 | 4 Moderation and export | not started |
 | 5 E-card and RSVP | not started |
 | 6 Payments and plans | deferred by the developer (plans and limits still enforced) |

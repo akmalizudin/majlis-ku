@@ -2,15 +2,16 @@ import "server-only";
 import type { Event, Guest, Plan, Upload, UploadKind } from "@prisma/client";
 import { pendingUploadCount } from "@/server/events/service";
 import { ApiError } from "@/server/http";
-import { detectedMatchesKind, detectMime, isAllowedMime, SNIFF_BYTES } from "@/server/media/file-check";
+import { baseMime, detectedMatchesKind, detectMime, isAllowedMime, SNIFF_BYTES } from "@/server/media/file-check";
 import { processPhoto } from "@/server/media/images";
 import { uploadKey } from "@/server/media/keys";
 import { storage, UPLOAD_URL_TTL_SEC } from "@/server/media/storage";
 import { checkUploadAllowed, KIND_MAX_BYTES } from "@/server/plans/limits";
 import { db } from "@/server/db";
+import { enqueueProcessing, publishUpload } from "./processing";
 
-/** Kinds guests can upload today. Phase 3 adds VIDEO and VOICE. */
-export const ENABLED_KINDS: readonly UploadKind[] = ["PHOTO"];
+/** Kinds guests can upload. Video still needs a plan with videoAllowed (checked in checkUploadAllowed). */
+export const ENABLED_KINDS: readonly UploadKind[] = ["PHOTO", "VIDEO", "VOICE"];
 
 const LIMIT_MESSAGES: Record<string, number> = {
   gallery_not_in_plan: 403,
@@ -99,10 +100,16 @@ export async function completeUpload({ eventId, uploadId, guestId }: { eventId: 
     }
   }
 
+  // Photos are ready now; video and voice are converted in the background (see processing.ts).
+  // Either way the item counts against the plan from this moment, so parallel uploads cannot overshoot it.
   const size = BigInt(info.size);
+  const status = upload.kind === "PHOTO" ? ("READY" as const) : ("PROCESSING" as const);
+  const mimeType = upload.kind === "PHOTO" && detected ? detected : baseMime(upload.mimeType);
   await db.$transaction([
-    db.upload.update({ where: { id: upload.id }, data: { ...data, status: "READY", mimeType: detected ?? upload.mimeType, sizeBytes: size } }),
+    db.upload.update({ where: { id: upload.id }, data: { ...data, status, mimeType, sizeBytes: size } }),
     db.event.update({ where: { id: eventId }, data: { uploadCount: { increment: 1 }, storageBytes: { increment: size } } }),
   ]);
-  return { status: "READY" as const };
+  if (status === "READY") await publishUpload(upload.id);
+  else void enqueueProcessing(upload);
+  return { status };
 }

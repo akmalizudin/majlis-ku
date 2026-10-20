@@ -54,7 +54,11 @@ export default async function GuestEventPage({ params }: { params: Promise<{ loc
             needsPin={!pinOk}
             initialName={guest?.displayName ?? null}
             galleryHref={pinOk ? galleryHref : null}
-            features={{ video: ENABLED_KINDS.includes("VIDEO"), voice: ENABLED_KINDS.includes("VOICE") }}
+            features={{
+              video: ENABLED_KINDS.includes("VIDEO") && event.plan.videoAllowed,
+              voice: ENABLED_KINDS.includes("VOICE"),
+              maxVideoSeconds: event.plan.maxVideoSeconds ?? 60,
+            }}
           />
         </NextIntlClientProvider>
       ) : null}

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- media uses signed, short-lived URLs that next/image must not cache */
 import type { ReactNode } from "react";
 import { formatDuration } from "@/lib/format";
-import type { GalleryItem } from "@/server/gallery/service";
+import type { GalleryItem } from "@/server/gallery/items";
 
 export type GalleryLabels = { by: string; pending: string; hidden: string; original: string; voiceNote: string; empty: string };
 

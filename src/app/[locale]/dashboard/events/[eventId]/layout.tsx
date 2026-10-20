@@ -41,6 +41,7 @@ export default async function EventLayout({
               { href: base, label: t("overview") },
               { href: `${base}/gallery`, label: t("gallery") },
               { href: `${base}/edit`, label: t("edit") },
+              { href: getPathname({ href: `/slideshow/${event.id}`, locale: locale as Locale }), label: t("slideshow"), external: true },
               { href: getPathname({ href: `/${event.slug}`, locale: locale as Locale }), label: t("guestPage"), external: true },
             ]}
           />

@@ -46,7 +46,7 @@ Decided by the developer on 2026-10-20: get the whole system working locally fir
 
 ## Stack
 
-Next.js (App Router), TypeScript strict, Tailwind CSS, PWA. PostgreSQL with Prisma 6 (locally through `embedded-postgres`). Auth.js v5 for hosts: email magic link (printed to the server log in development) and Google. A `StorageDriver` interface: `local` disk with app-signed upload and download URLs now, S3-compatible (R2 or S3) presigned uploads later. `sharp` thumbnails. Server-Sent Events for realtime. Payments deferred; later a Malaysian gateway behind a `PaymentProvider` interface. Zod at every boundary. Vitest and Playwright. Local first; Docker and hosting later. Do not change the stack or add a paid service without the developer's approval.
+Next.js (App Router), TypeScript strict, Tailwind CSS, PWA. PostgreSQL with Prisma 6 (locally through `embedded-postgres`). Auth.js v5 for hosts: email magic link (printed to the server log in development) and Google. A `StorageDriver` interface: `local` disk with app-signed upload and download URLs now, S3-compatible (R2 or S3) presigned uploads later. `sharp` thumbnails. `ffmpeg-static` for video and voice copies in an in-process job queue. Server-Sent Events for realtime from an in-process bus. Payments deferred; later a Malaysian gateway behind a `PaymentProvider` interface. Zod at every boundary. Vitest and Playwright. Local first; Docker and hosting later. Do not change the stack or add a paid service without the developer's approval.
 
 ## Layout
 
@@ -54,7 +54,7 @@ Next.js (App Router), TypeScript strict, Tailwind CSS, PWA. PostgreSQL with Pris
 
 ## Status
 
-Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) and 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 3, 4, 5, 7 and 8 have not started.
+Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) and 3 (video and voice with ffmpeg, live gallery over SSE, slideshow) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 4, 5, 7 and 8 have not started.
 
 ## Commands
 

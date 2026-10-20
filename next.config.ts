@@ -6,8 +6,8 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
-  // pdfkit reads its font metrics from its own folder at runtime; keep it out of the bundle.
-  serverExternalPackages: ["pdfkit"],
+  // pdfkit reads its font metrics and ffmpeg-static points at its binary from their own folders; keep them out of the bundle.
+  serverExternalPackages: ["pdfkit", "ffmpeg-static"],
 };
 
 export default withNextIntl(nextConfig);

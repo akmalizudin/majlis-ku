@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { GalleryGrid } from "@/components/gallery/gallery-grid";
 import { GalleryToolbar, nextPageHref } from "@/components/gallery/gallery-toolbar";
+import { LiveItems } from "@/components/gallery/live-items";
 import { galleryLabels } from "@/components/host/labels";
 import { LocaleToggle } from "@/components/locale-toggle";
 import { getPathname, Link } from "@/i18n/navigation";
@@ -52,6 +53,17 @@ export default async function GuestGalleryPage({
           labels={labels}
           filters={GALLERY_FILTERS}
         />
+        {!query.after && query.sort === "newest" ? (
+          <LiveItems
+            streamUrl={`/api/e/${slug}/stream`}
+            filter={query.filter}
+            q={query.q}
+            labels={labels}
+            liveLabel={tg("live")}
+            newLabel={tg("newWord")}
+            showStatus={false}
+          />
+        ) : null}
         <GalleryGrid items={page.items} labels={labels} showStatus={false} />
         {page.nextCursor ? (
           <div className="text-center">

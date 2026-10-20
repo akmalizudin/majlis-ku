@@ -1,10 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { compressImage, postJson, UploadError, uploadOne, type Stage } from "./upload-client";
 
-type View = "pin" | "name" | "menu" | "photo" | "wish" | "thanks";
+// Loaded only when the guest opens Video or Voice, so the first page load stays small.
+const VideoPicker = dynamic(() => import("./video-picker"), { ssr: false });
+const VoiceRecorder = dynamic(() => import("./voice-recorder"), { ssr: false });
+
+type View = "pin" | "name" | "menu" | "photo" | "video" | "voice" | "wish" | "thanks";
 
 type QueueItem = { id: number; name: string; file: File; stage: Stage | "queued" | "failed"; progress: number; error?: string };
 
@@ -50,8 +55,8 @@ export function GuestActions({
   needsPin: boolean;
   initialName: string | null;
   galleryHref: string | null;
-  /** Which upload kinds are switched on (video and voice arrive in phase 3). */
-  features: { video: boolean; voice: boolean };
+  /** What this event's plan allows. Video needs a plan with video; the server checks again. */
+  features: { video: boolean; voice: boolean; maxVideoSeconds: number };
 }) {
   const t = useTranslations("guest");
   const [view, setView] = useState<View>(needsPin ? "pin" : initialName ? "menu" : "name");
@@ -60,6 +65,7 @@ export function GuestActions({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [queue, setQueue] = useState<QueueItem[]>([]);
+  const [processingNote, setProcessingNote] = useState(false);
   const nextId = useRef(1);
 
   useEffect(() => {
@@ -246,6 +252,7 @@ export function GuestActions({
         </p>
         <h2 className="mt-2 font-serif text-3xl">{t("thanksTitle")}</h2>
         <p className="mt-2 text-ink/70">{t("thanksBody")}</p>
+        {processingNote ? <p className="mt-2 text-sm text-ink/60">{t("processingNote")}</p> : null}
         <div className="mt-5 space-y-2">
           {galleryHref ? (
             <a href={galleryHref} className={`${button} inline-flex items-center justify-center`}>
@@ -256,6 +263,7 @@ export function GuestActions({
             type="button"
             onClick={() => {
               setQueue([]);
+              setProcessingNote(false);
               setView("menu");
             }}
             className="min-h-12 w-full rounded-full border border-ink/20 px-6 font-medium"
@@ -346,6 +354,25 @@ export function GuestActions({
     );
   }
 
+  if (view === "video" || view === "voice") {
+    const finish = () => {
+      setProcessingNote(true);
+      setView("thanks");
+    };
+    return (
+      <section className={card}>
+        {back}
+        <h2 className="mt-2 font-serif text-2xl">{view === "video" ? t("video") : t("voice")}</h2>
+        {consentBox}
+        {view === "video" ? (
+          <VideoPicker slug={slug} consent={consent} maxSeconds={features.maxVideoSeconds} onDone={finish} errorText={errorText} />
+        ) : (
+          <VoiceRecorder slug={slug} consent={consent} onDone={finish} errorText={errorText} />
+        )}
+      </section>
+    );
+  }
+
   if (view === "wish") {
     return (
       <section className={card}>
@@ -397,24 +424,29 @@ export function GuestActions({
           </span>
           {t("photo")}
         </button>
-        {features.video ? null : (
-            <button type="button" className={`${action} opacity-50`} disabled>
-              <span aria-hidden className="text-3xl">
-                🎥
-              </span>
-              {t("video")}
-              <span className="text-xs font-normal">{t("comingSoon")}</span>
-            </button>
-        )}
-        {features.voice ? null : (
-            <button type="button" className={`${action} opacity-50`} disabled>
-              <span aria-hidden className="text-3xl">
-                🎙️
-              </span>
-              {t("voice")}
-              <span className="text-xs font-normal">{t("comingSoon")}</span>
-            </button>
-        )}
+        <button
+          type="button"
+          className={`${action} ${features.video ? "" : "opacity-50"}`}
+          disabled={!features.video}
+          onClick={() => setView("video")}
+        >
+          <span aria-hidden className="text-3xl">
+            🎥
+          </span>
+          {t("video")}
+          {features.video ? null : <span className="text-xs font-normal">{t("premiumOnly")}</span>}
+        </button>
+        <button
+          type="button"
+          className={`${action} ${features.voice ? "" : "opacity-50"}`}
+          disabled={!features.voice}
+          onClick={() => setView("voice")}
+        >
+          <span aria-hidden className="text-3xl">
+            🎙️
+          </span>
+          {t("voice")}
+        </button>
         <button type="button" className={action} onClick={() => setView("wish")}>
           <span aria-hidden className="text-3xl">
             ✍️

@@ -81,7 +81,8 @@
     "overview": "Ringkasan",
     "gallery": "Galeri",
     "edit": "Tetapan",
-    "guestPage": "Halaman tetamu"
+    "guestPage": "Halaman tetamu",
+    "slideshow": "Tayangan slaid"
   },
   "eventOverview": {
     "shareTitle": "Kongsi dengan tetamu",
@@ -137,7 +138,9 @@
     "pending": "Menunggu kelulusan",
     "hidden": "Disembunyikan",
     "original": "Fail asal",
-    "voiceNote": "Mesej suara"
+    "voiceNote": "Mesej suara",
+    "live": "Langsung",
+    "newWord": "baharu"
   },
   "guest": {
     "pinTitle": "Majlis ini dilindungi PIN",
@@ -193,7 +196,21 @@
       "rate_limited": "Terlalu cepat. Tunggu sebentar.",
       "generic": "Ralat. Sila cuba lagi."
     },
-    "comingSoon": "Akan datang"
+    "comingSoon": "Akan datang",
+    "videoPick": "Pilih atau rakam video",
+    "videoHelp": "Maksimum {seconds} saat.",
+    "videoTooLong": "Video ini {seconds} saat. Had ialah {max} saat.",
+    "premiumOnly": "Pelan Premium",
+    "voiceStart": "Mula rakam",
+    "voiceStop": "Berhenti",
+    "voiceRecording": "Merakam… {time}",
+    "voiceRedo": "Rakam semula",
+    "voiceSend": "Hantar mesej suara",
+    "voiceMax": "Maksimum 3 minit.",
+    "voiceNoMic": "Rakaman tidak tersedia pada pelayar ini. Pilih fail audio.",
+    "voiceDenied": "Akses mikrofon ditolak. Benarkan mikrofon atau pilih fail audio.",
+    "voicePick": "Pilih fail audio",
+    "processingNote": "Ia sedang diproses dan akan muncul dalam galeri sebentar lagi."
   },
   "admin": {
     "title": "Panel admin",
@@ -208,5 +225,12 @@
     "notFoundTitle": "Halaman tidak dijumpai",
     "notFoundBody": "Pautan ini mungkin salah atau telah tamat.",
     "home": "Ke laman utama"
+  },
+  "slideshow": {
+    "title": "Tayangan slaid",
+    "scan": "Imbas untuk kongsi gambar & ucapan",
+    "empty": "Menunggu kenangan pertama…",
+    "fullscreen": "Skrin penuh",
+    "by": "oleh {name}"
   }
 }
