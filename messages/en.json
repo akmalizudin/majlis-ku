@@ -232,5 +232,44 @@
     "empty": "Waiting for the first memory…",
     "fullscreen": "Full screen",
     "by": "by {name}"
+  },
+  "moderation": {
+    "approve": "Approve",
+    "hide": "Hide",
+    "show": "Show",
+    "delete": "Delete",
+    "confirmDelete": "Delete this item for good?",
+    "approveAll": "Approve all ({count})",
+    "statusAll": "Any status",
+    "statusPending": "Waiting for approval",
+    "statusHidden": "Hidden"
+  },
+  "export": {
+    "title": "Download",
+    "zip": "Download everything (ZIP)",
+    "zipHelp": "Every original file, plus the wishes as PDF and CSV.",
+    "pdf": "Wishes guestbook (PDF)"
+  },
+  "members": {
+    "title": "Co-hosts",
+    "help": "They can approve, hide and delete content. They sign in with this email.",
+    "owner": "Owner",
+    "cohost": "Co-host",
+    "email": "Email",
+    "invite": "Invite",
+    "invited": "Invited. Ask them to sign in with this email.",
+    "remove": "Remove",
+    "invalid_email": "That email is not valid.",
+    "already_member": "This person already has access.",
+    "forbidden": "Only the owner can manage co-hosts."
+  },
+  "danger": {
+    "title": "Delete event",
+    "body": "This deletes the event and every photo, video, voice message, wish, RSVP and file for good. It cannot be undone.",
+    "confirmLabel": "Type {slug} to confirm",
+    "button": "Delete this event",
+    "confirm": "The confirmation text does not match.",
+    "has_payments": "Events with payment records cannot be deleted here. Contact an admin.",
+    "forbidden": "Only the owner can delete the event."
   }
 }

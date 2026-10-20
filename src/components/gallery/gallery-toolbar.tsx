@@ -19,6 +19,7 @@ function href(base: string, query: Partial<GalleryQuery>): string {
   if (query.filter && query.filter !== "all") params.set("filter", query.filter);
   if (query.q) params.set("q", query.q);
   if (query.sort && query.sort !== "newest") params.set("sort", query.sort);
+  if (query.status && query.status !== "all") params.set("status", query.status);
   const qs = params.toString();
   return qs ? `${base}?${qs}` : base;
 }
@@ -55,6 +56,7 @@ export function GalleryToolbar({
       </div>
       <form className="flex flex-wrap gap-2" action={formAction}>
         {query.filter !== "all" ? <input type="hidden" name="filter" value={query.filter} /> : null}
+        {query.status !== "all" ? <input type="hidden" name="status" value={query.status} /> : null}
         <input
           name="q"
           defaultValue={query.q}
@@ -72,6 +74,11 @@ export function GalleryToolbar({
       </form>
     </div>
   );
+}
+
+/** Links that keep the current query but change one field. */
+export function galleryHref(base: string, query: GalleryQuery, change: Partial<GalleryQuery>): string {
+  return href(base, { ...query, ...change });
 }
 
 export function nextPageHref(base: string, query: GalleryQuery, cursor: string): string {

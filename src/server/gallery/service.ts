@@ -13,6 +13,8 @@ export const galleryQuerySchema = z.object({
   filter: z.enum(GALLERY_FILTERS).catch("all"),
   q: z.string().trim().max(40).catch(""),
   sort: z.enum(["newest", "oldest"]).catch("newest"),
+  /** Hosts only: narrow to waiting or hidden items. */
+  status: z.enum(["all", "pending", "hidden"]).catch("all"),
   // Cursor: ISO date of the last item shown, plus its id for ties.
   after: z
     .string()
@@ -46,7 +48,14 @@ export async function listGallery(eventId: string, query: GalleryQuery, audience
       }
     : {};
   const nameFilter = query.q ? { guestName: { contains: query.q, mode: "insensitive" as const } } : {};
-  const visibility = audience === "guest" ? { moderation: "VISIBLE" as const } : {};
+  const visibility =
+    audience === "guest"
+      ? { moderation: "VISIBLE" as const }
+      : query.status === "pending"
+        ? { moderation: "PENDING_APPROVAL" as const }
+        : query.status === "hidden"
+          ? { moderation: "HIDDEN" as const }
+          : {};
   const orderBy = [{ createdAt: desc ? "desc" : "asc" }, { id: desc ? "desc" : "asc" }] satisfies Prisma.UploadOrderByWithRelationInput[];
 
   const wantUploads = query.filter !== "wish";

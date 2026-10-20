@@ -54,7 +54,7 @@ Next.js (App Router), TypeScript strict, Tailwind CSS, PWA. PostgreSQL with Pris
 
 ## Status
 
-Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) and 3 (video and voice with ffmpeg, live gallery over SSE, slideshow) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 4, 5, 7 and 8 have not started.
+Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) 3 (video and voice with ffmpeg, live gallery over SSE, slideshow) and 4 (moderation, ZIP and wishes PDF export, co-hosts, delete event) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 5, 7 and 8 have not started.
 
 ## Commands
 

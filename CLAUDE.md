@@ -109,7 +109,7 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 | 1 Setup: scaffold, schema, auth, i18n, base layout | done |
 | 2 Guestbook MVP: events, QR and stand PDF, guest photo and wish upload, host and guest gallery, PIN | done |
 | 3 Media+: video and voice (ffmpeg processing in the background), live gallery over SSE, venue slideshow | done |
-| 4 Moderation and export | not started |
+| 4 Moderation and export: approve, hide, delete, approve all, ZIP of originals plus wishes PDF and CSV, co-host invites, delete event | done |
 | 5 E-card and RSVP | not started |
 | 6 Payments and plans | deferred by the developer (plans and limits still enforced) |
 | 7 Admin panel | not started |

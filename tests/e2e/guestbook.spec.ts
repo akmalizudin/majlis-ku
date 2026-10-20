@@ -70,9 +70,9 @@ test("host creates an event; a guest adds a photo and a wish; the host sees both
   const grid = host.getByTestId("gallery-grid");
   await expect(grid.locator("li")).toHaveCount(3);
   await expect(grid.getByText("“Selamat pengantin baru!”")).toBeVisible();
-  await host.getByRole("link", { name: "Ucapan" }).click();
+  await host.getByRole("link", { name: "Ucapan", exact: true }).click();
   await expect(grid.locator("li")).toHaveCount(1);
-  await host.getByRole("link", { name: "Gambar" }).click();
+  await host.getByRole("link", { name: "Gambar", exact: true }).click();
   await expect(grid.locator("img")).toHaveCount(2);
 
   // Usage meter counts the photos.

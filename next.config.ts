@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   // pdfkit reads its font metrics and ffmpeg-static points at its binary from their own folders; keep them out of the bundle.
-  serverExternalPackages: ["pdfkit", "ffmpeg-static"],
+  serverExternalPackages: ["pdfkit", "ffmpeg-static", "archiver"],
 };
 
 export default withNextIntl(nextConfig);

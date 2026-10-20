@@ -232,5 +232,44 @@
     "empty": "Menunggu kenangan pertama…",
     "fullscreen": "Skrin penuh",
     "by": "oleh {name}"
+  },
+  "moderation": {
+    "approve": "Luluskan",
+    "hide": "Sembunyi",
+    "show": "Papar",
+    "delete": "Padam",
+    "confirmDelete": "Padam item ini untuk selamanya?",
+    "approveAll": "Luluskan semua ({count})",
+    "statusAll": "Semua status",
+    "statusPending": "Menunggu kelulusan",
+    "statusHidden": "Disembunyikan"
+  },
+  "export": {
+    "title": "Muat turun",
+    "zip": "Muat turun semua (ZIP)",
+    "zipHelp": "Semua fail asal, serta ucapan dalam PDF dan CSV.",
+    "pdf": "Buku ucapan (PDF)"
+  },
+  "members": {
+    "title": "Tuan rumah bersama",
+    "help": "Mereka boleh luluskan, sembunyi dan padam kandungan. Mereka log masuk dengan e-mel ini.",
+    "owner": "Pemilik",
+    "cohost": "Tuan rumah bersama",
+    "email": "E-mel",
+    "invite": "Jemput",
+    "invited": "Dijemput. Minta mereka log masuk dengan e-mel ini.",
+    "remove": "Buang",
+    "invalid_email": "E-mel tidak sah.",
+    "already_member": "Orang ini sudah ada akses.",
+    "forbidden": "Hanya pemilik boleh mengurus tuan rumah bersama."
+  },
+  "danger": {
+    "title": "Padam majlis",
+    "body": "Ini memadam majlis, semua gambar, video, suara, ucapan, RSVP dan fail untuk selamanya. Tidak boleh dibatalkan.",
+    "confirmLabel": "Taip {slug} untuk sahkan",
+    "button": "Padam majlis ini",
+    "confirm": "Teks pengesahan tidak sepadan.",
+    "has_payments": "Majlis yang ada rekod bayaran tidak boleh dipadam di sini. Hubungi admin.",
+    "forbidden": "Hanya pemilik boleh memadam majlis."
   }
 }
