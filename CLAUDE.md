@@ -110,7 +110,7 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 | 2 Guestbook MVP: events, QR and stand PDF, guest photo and wish upload, host and guest gallery, PIN | done |
 | 3 Media+: video and voice (ffmpeg processing in the background), live gallery over SSE, venue slideshow | done |
 | 4 Moderation and export: approve, hide, delete, approve all, ZIP of originals plus wishes PDF and CSV, co-host invites, delete event | done |
-| 5 E-card and RSVP | not started |
+| 5 E-card and RSVP: 3 templates, builder with photos and music, public card at `/i/{slug}` with countdown, maps, calendar, OG image, RSVP with edit, list with CSV and Excel | done |
 | 6 Payments and plans | deferred by the developer (plans and limits still enforced) |
 | 7 Admin panel | not started |
 | 8 Hardening | not started |
@@ -136,6 +136,8 @@ node scripts/skills.mjs check  # fail if the twins differ
 Sign in locally: enter any email on `/signin`; with `EMAIL_SERVER` empty, the magic link is printed in the `npm run dev` log and appended to `.data/dev-mail.log`. Emails in `ADMIN_EMAILS` (default `admin@majlisku.test`) become admins on sign-in.
 
 Try it on a phone on the same Wi-Fi: set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` in `.env` to `http://<your-LAN-IP>:3000`, run `npm run dev -- -H 0.0.0.0`, and scan the QR code from the event page.
+
+`NEXT_PUBLIC_APP_URL` is read at runtime through `env()` (QR codes, share links, `metadataBase`); never read `process.env.NEXT_PUBLIC_*` directly in server code, because Next.js freezes it at build time.
 
 Gotchas: do not run `next dev` and `next build` at the same time (they share `.next/`); stop old `next start` processes before e2e, or Playwright reuses a stale server. If an installed PostgreSQL already uses port 5432, that is fine: the embedded one uses 5433.
 

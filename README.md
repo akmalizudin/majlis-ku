@@ -19,6 +19,8 @@ This repo is built by several people and AI agents in parallel, using one shared
 | `.claude/skills/`, `.codex/skills/` | Skills that enforce the process (Codex copies are generated) |
 | [.mcp.json](.mcp.json) | MCP servers for agents: Playwright and Prisma |
 
+**Continuing the work? Read [docs/HANDOFF.md](docs/HANDOFF.md) first.**
+
 Start any agent session in the repo root. Claude Code picks up `CLAUDE.md` and the skills automatically; ask it to use `majlis-workflow` first. Codex picks up `AGENTS.md` and `.codex/skills/`.
 
 ### Parallel work with worktrees

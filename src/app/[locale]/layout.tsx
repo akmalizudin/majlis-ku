@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { routing } from "@/i18n/routing";
 import { BRAND_COLOR } from "@/lib/brand";
+import { env } from "@/lib/env";
 import "../globals.css";
 
 // Pages read the session (header, dashboard) and the database, so render per request.
@@ -16,7 +17,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title: { default: t("metaTitle"), template: "%s · Majlis Ku" },
     description: t("metaDescription"),
-    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+    // Read at runtime through env(): process.env.NEXT_PUBLIC_* would be frozen at build time.
+    metadataBase: new URL(env().NEXT_PUBLIC_APP_URL),
     appleWebApp: { capable: true, title: "Majlis Ku" },
   };
 }

@@ -54,7 +54,7 @@ Next.js (App Router), TypeScript strict, Tailwind CSS, PWA. PostgreSQL with Pris
 
 ## Status
 
-Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) 3 (video and voice with ffmpeg, live gallery over SSE, slideshow) and 4 (moderation, ZIP and wishes PDF export, co-hosts, delete event) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 5, 7 and 8 have not started.
+Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) 3 (video and voice with ffmpeg, live gallery over SSE, slideshow) 4 (moderation, ZIP and wishes PDF export, co-hosts, delete event) and 5 (e-card templates and builder, public card with RSVP, OG image, RSVP exports) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 7 and 8 have not started.
 
 ## Commands
 
@@ -74,7 +74,7 @@ node scripts/skills.mjs sync
 node scripts/skills.mjs check
 ```
 
-Local sign-in: with `EMAIL_SERVER` empty the magic link is printed in the server log and appended to `.data/dev-mail.log`; emails in `ADMIN_EMAILS` become admins. To test on a phone, set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` to `http://<LAN-IP>:3000` and run `npm run dev -- -H 0.0.0.0`. Do not run `next dev` and `next build` together (shared `.next/`), and stop old `next start` processes before e2e.
+Local sign-in: with `EMAIL_SERVER` empty the magic link is printed in the server log and appended to `.data/dev-mail.log`; emails in `ADMIN_EMAILS` become admins. To test on a phone, set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` to `http://<LAN-IP>:3000` and run `npm run dev -- -H 0.0.0.0`. Read `NEXT_PUBLIC_APP_URL` through `env()` in server code, never `process.env.NEXT_PUBLIC_*` (frozen at build time). Do not run `next dev` and `next build` together (shared `.next/`), and stop old `next start` processes before e2e.
 
 ## Rules
 
