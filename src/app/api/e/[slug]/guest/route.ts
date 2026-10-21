@@ -12,7 +12,7 @@ const bodySchema = z.object({ displayName: displayNameSchema });
 export const POST = handle(async (request: Request, { params }: { params: Promise<{ slug: string }> }) => {
   const { slug } = await params;
   const { displayName } = await readJson(request, bodySchema);
-  if (!limiters.guestJoin.hit(await clientIpHash()).ok) throw new ApiError("rate_limited", 429);
+  if (!(await limiters.guestJoin.hit(await clientIpHash())).ok) throw new ApiError("rate_limited", 429);
 
   const deviceHash = await ensureDeviceHash();
   const context = await readGuestContext(slug);

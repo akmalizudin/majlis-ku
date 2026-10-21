@@ -102,6 +102,7 @@ enum AuditAction {
   PLAN_UPDATED
   TEMPLATE_CREATED
   TEMPLATE_UPDATED
+  EVENT_PURGED
 }
 
 // ---------- Auth (Auth.js Prisma adapter) ----------
@@ -230,6 +231,7 @@ model Event {
   planActivatedAt   DateTime?
   purgeAt           DateTime?         // set from plan retention; purge job deletes media after this
   suspendedAt       DateTime?
+  archivedAt        DateTime?         // set when the purge has deleted the event's guest data and files
   uploadCount       Int               @default(0)
   storageBytes      BigInt            @default(0)
   createdAt         DateTime          @default(now())
@@ -246,6 +248,7 @@ model Event {
   reports  AbuseReport[]
 
   @@index([status, purgeAt])
+  @@index([archivedAt])
 }
 
 model EventMember {
@@ -412,4 +415,12 @@ model AuditLog {
 
   @@index([createdAt])
   @@index([targetType, targetId])
+}
+
+model RateLimit {
+  key         String   @id // "<limiter>:<key>", keys are device or salted IP hashes, never raw values
+  windowStart DateTime
+  count       Int
+
+  @@index([windowStart])
 }

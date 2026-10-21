@@ -22,8 +22,8 @@ describe("nextModeration", () => {
 
 describe("roles", () => {
   it("lets owners and co-hosts moderate", () => {
-    expect(canModerate("OWNER")).toBe(true);
-    expect(canModerate("COHOST")).toBe(true);
+    expect(canModerate({ memberRole: "OWNER", status: "ACTIVE" })).toBe(true);
+    expect(canModerate({ memberRole: "COHOST", status: "ACTIVE" })).toBe(true);
   });
 
   it("lets only owners manage members and delete the event", () => {
@@ -34,14 +34,23 @@ describe("roles", () => {
   });
 
   it("lets owners and co-hosts edit the event", () => {
-    expect(canEditEvent("OWNER")).toBe(true);
-    expect(canEditEvent("COHOST")).toBe(true);
+    expect(canEditEvent({ memberRole: "OWNER", status: "ACTIVE" })).toBe(true);
+    expect(canEditEvent({ memberRole: "COHOST", status: "ACTIVE" })).toBe(true);
   });
 
   it("makes admins read-only on host dashboards", () => {
-    expect(canModerate("ADMIN")).toBe(false);
+    expect(canModerate({ memberRole: "ADMIN", status: "ACTIVE" })).toBe(false);
     expect(canManageMembers("ADMIN")).toBe(false);
     expect(canDeleteEvent("ADMIN")).toBe(false);
-    expect(canEditEvent("ADMIN")).toBe(false);
+    expect(canEditEvent({ memberRole: "ADMIN", status: "ACTIVE" })).toBe(false);
+  });
+
+  it("makes archived events read-only for owners and co-hosts", () => {
+    expect(canEditEvent({ memberRole: "OWNER", status: "ARCHIVED" })).toBe(false);
+    expect(canModerate({ memberRole: "COHOST", status: "ARCHIVED" })).toBe(false);
+    expect(canEditEvent({ memberRole: "COHOST", status: "SUSPENDED" })).toBe(true);
+    expect(canModerate({ memberRole: "OWNER", status: "SUSPENDED" })).toBe(true);
+    expect(canEditEvent({ memberRole: "ADMIN", status: "ARCHIVED" })).toBe(false);
+    expect(canModerate({ memberRole: "ADMIN", status: "SUSPENDED" })).toBe(false);
   });
 });

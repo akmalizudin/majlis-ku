@@ -36,8 +36,8 @@ export async function changeEventPlan(actorId: string, eventId: string, planCode
     const plan = await tx.plan.findUnique({ where: { code: planCode }, select: { id: true, active: true, retentionDays: true } });
     const change = planChange(event, plan, new Date());
     if (!change.ok) return fail(change.error);
-    // planId in the where clause: a concurrent plan change or delete loses instead of auditing a stale "from".
-    const { count } = await tx.event.updateMany({ where: { id: eventId, planId: event.planId }, data: change.data });
+    // planId and status in the where clause: a concurrent plan change, delete or retention purge loses instead of auditing a stale "from".
+    const { count } = await tx.event.updateMany({ where: { id: eventId, planId: event.planId, status: event.status }, data: change.data });
     if (count === 0) return fail("not_found");
     await writeAudit(tx, {
       actorId,

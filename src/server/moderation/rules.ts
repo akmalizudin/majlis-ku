@@ -1,7 +1,8 @@
-import type { EventMemberRole, ModerationState } from "@prisma/client";
+import type { EventMemberRole, EventStatus, ModerationState } from "@prisma/client";
 
 export type ModerationAction = "approve" | "hide" | "show";
 export type MemberRole = EventMemberRole | "ADMIN";
+export type EventAccess = { memberRole: MemberRole; status: EventStatus };
 
 /** The new state for an action, or null when the action does not apply to the current state. */
 export function nextModeration(current: ModerationState, action: ModerationAction): ModerationState | null {
@@ -15,13 +16,14 @@ export function nextModeration(current: ModerationState, action: ModerationActio
   }
 }
 
-export function canModerate(role: MemberRole): boolean {
-  return role === "OWNER" || role === "COHOST";
+/** Archived events (guest data purged) are read-only for everyone. */
+export function canModerate(event: EventAccess): boolean {
+  return (event.memberRole === "OWNER" || event.memberRole === "COHOST") && event.status !== "ARCHIVED";
 }
 
 /** Admins are read-only on host dashboards; they act through /admin. */
-export function canEditEvent(role: MemberRole): boolean {
-  return role === "OWNER" || role === "COHOST";
+export function canEditEvent(event: EventAccess): boolean {
+  return canModerate(event);
 }
 
 export function canManageMembers(role: MemberRole): boolean {

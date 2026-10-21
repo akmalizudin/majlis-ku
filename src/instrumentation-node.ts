@@ -1,3 +1,4 @@
+import { startPurgeSchedule } from "./server/retention/schedule";
 import { resumeProcessing } from "./server/uploads/processing";
 
 // Pick up uploads that were still processing when the server last stopped.
@@ -8,3 +9,6 @@ try {
   // The database may not be up yet (for example during `next build`); uploads resume on the next start.
   console.warn("[media] could not resume processing:", error instanceof Error ? error.message : error);
 }
+
+// Archive events whose retention ended (spec 8a): first run after a minute, then hourly.
+startPurgeSchedule();

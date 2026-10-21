@@ -20,7 +20,7 @@ export default async function CardBuilderPage({ params }: { params: Promise<{ lo
   }
 
   // An admin who is not a member only sees the note, so skip loading templates, card and signed media.
-  const editable = canModerate(event.memberRole);
+  const editable = canModerate(event);
   const [templates, card] = editable ? await Promise.all([listTemplates(), getCard(event.id)]) : [[], null];
   // A deactivated template the card still uses stays visible as the selected tile.
   if (card && !templates.some((tpl) => tpl.id === card.templateId)) templates.push({ ...card.template, style: card.style });

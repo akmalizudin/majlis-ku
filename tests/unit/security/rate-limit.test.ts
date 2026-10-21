@@ -1,30 +1,24 @@
 import { describe, expect, it } from "vitest";
-import { createRateLimiter } from "@/server/security/rate-limit";
+import { rateLimitResult } from "@/server/security/rate-limit-rules";
 
-describe("createRateLimiter", () => {
-  it("allows the limit, blocks the next hit, and resets after the window", () => {
-    const limiter = createRateLimiter({ limit: 3, windowMs: 1000 });
-    const t0 = 10_000;
-    expect(limiter.hit("k", t0).ok).toBe(true);
-    expect(limiter.hit("k", t0 + 1).ok).toBe(true);
-    expect(limiter.hit("k", t0 + 2).ok).toBe(true);
-    const blocked = limiter.hit("k", t0 + 3);
-    expect(blocked.ok).toBe(false);
-    expect(blocked.retryAfterSec).toBe(1);
-    expect(limiter.hit("k", t0 + 1000).ok).toBe(true);
+const WINDOW = 600_000;
+const start = new Date("2026-10-21T00:00:00Z");
+
+describe("rateLimitResult", () => {
+  it("allows up to the limit", () => {
+    expect(rateLimitResult({ count: 3, windowStart: start }, 3, WINDOW, new Date(start.getTime() + 1000))).toEqual({
+      ok: true,
+      retryAfterSec: 0,
+    });
   });
 
-  it("keeps keys separate", () => {
-    const limiter = createRateLimiter({ limit: 1, windowMs: 1000 });
-    expect(limiter.hit("a", 0).ok).toBe(true);
-    expect(limiter.hit("b", 0).ok).toBe(true);
-    expect(limiter.hit("a", 1).ok).toBe(false);
+  it("blocks over the limit with the seconds left in the window", () => {
+    const now = new Date(start.getTime() + 400_000);
+    expect(rateLimitResult({ count: 4, windowStart: start }, 3, WINDOW, now)).toEqual({ ok: false, retryAfterSec: 200 });
   });
 
-  it("can be reset for a key", () => {
-    const limiter = createRateLimiter({ limit: 1, windowMs: 1000 });
-    limiter.hit("a", 0);
-    limiter.reset("a");
-    expect(limiter.hit("a", 1).ok).toBe(true);
+  it("never asks to wait less than a second", () => {
+    const now = new Date(start.getTime() + WINDOW - 1);
+    expect(rateLimitResult({ count: 4, windowStart: start }, 3, WINDOW, now)).toEqual({ ok: false, retryAfterSec: 1 });
   });
 });

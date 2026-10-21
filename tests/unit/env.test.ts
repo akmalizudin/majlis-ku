@@ -30,4 +30,11 @@ describe("parseEnv", () => {
   it("treats empty strings as unset", () => {
     expect(() => parseEnv({ ...minimal, AUTH_SECRET: "" })).toThrow(/AUTH_SECRET/);
   });
+
+  it("rejects a CRON_SECRET shorter than 16 characters", () => {
+    expect(() => parseEnv({ ...minimal, CRON_SECRET: "short" })).toThrow(/CRON_SECRET/);
+    expect(parseEnv({ ...minimal, CRON_SECRET: "x".repeat(16) }).CRON_SECRET).toBe("x".repeat(16));
+    expect(parseEnv(minimal).CRON_SECRET).toBeUndefined();
+    expect(parseEnv({ ...minimal, CRON_SECRET: "" }).CRON_SECRET).toBeUndefined();
+  });
 });

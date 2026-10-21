@@ -10,7 +10,7 @@ export const POST = handle(async (request: Request, { params }: { params: Promis
   const { message } = await readJson(request, wishSchema);
   const { event, guest, deviceHash } = await requireGuest(slug);
   if (!event.plan.includesGallery) throw new ApiError("gallery_not_in_plan", 403);
-  if (!limiters.wish.hit(deviceHash).ok) throw new ApiError("rate_limited", 429);
+  if (!(await limiters.wish.hit(deviceHash)).ok) throw new ApiError("rate_limited", 429);
   const wish = await createWish({ event, guest, message });
   await publishWish(wish.id);
   return NextResponse.json({ wishId: wish.id }, { status: 201 });

@@ -17,7 +17,7 @@ export async function submitReportAction(locale: Locale, slug: string, formData:
   if (!hasLocale(routing.locales, locale) || !reportSlugSchema.safeParse(slug).success) notFound();
   const to = (query: string) => redirect({ href: `/${slug}/report?${query}`, locale });
   // Counted before validation, so bad submissions use up the allowance too.
-  if (!limiters.report.hit(await clientIpHash()).ok) return to("error=rate_limited");
+  if (!(await limiters.report.hit(await clientIpHash())).ok) return to("error=rate_limited");
   const event = await findGuestEvent(slug);
   if (!event) notFound();
   const parsed = reportSchema.safeParse(formFields(formData, ["reason", "details"]));

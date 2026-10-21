@@ -17,10 +17,10 @@ export const POST = handle(async (request: Request, { params }: { params: Promis
   if (!event.pinHash) return new Response(null, { status: 204 });
 
   const key = `${event.id}:${deviceHash}`;
-  if (!limiters.pinAttempt.hit(key).ok) throw new ApiError("locked", 429);
+  if (!(await limiters.pinAttempt.hit(key)).ok) throw new ApiError("locked", 429);
   if (!(await verifyPin(pin, event.pinHash))) throw new ApiError("invalid_pin", 403);
 
-  limiters.pinAttempt.reset(key);
+  await limiters.pinAttempt.reset(key);
   (await cookies()).set(pinCookieName(event.id), signPinPass(event.id, deviceHash, storageSecret()), {
     httpOnly: true,
     sameSite: "lax",

@@ -48,7 +48,8 @@
     "signedInAs": "Signed in as {email}",
     "newEvent": "New event",
     "items": "{count, plural, one {# item} other {# items}}",
-    "cohost": "Co-host"
+    "cohost": "Co-host",
+    "archived": "Archived"
   },
   "eventTypes": {
     "WEDDING": "Wedding",
@@ -86,6 +87,8 @@
     "card": "E-card",
     "rsvp": "RSVP",
     "suspendedBanner": "This event has been suspended by Majlis Ku. Guests cannot open it.",
+    "archivedBanner": "Retention ended. Guests' photos, videos, voice messages, wishes and RSVPs were deleted on {date}.",
+    "archivingBanner": "Retention ended. Guest data is being deleted.",
     "adminReadOnly": "You are viewing this event as an admin. It is read-only here; changes are made from the admin panel."
   },
   "eventOverview": {
@@ -165,6 +168,7 @@
     "voice": "Voice",
     "wish": "Wish",
     "consent": "By uploading, you agree that your photos, videos, voice messages and wishes are shared with the hosts of this event and kept for their plan's retention period. The hosts can delete content at any time.",
+    "consentPrivacyLink": "Read the Privacy Policy",
     "consentAgree": "I understand and agree",
     "photoPick": "Choose photos",
     "photoHelp": "You can pick several photos at once.",
@@ -410,6 +414,7 @@
       "EVENT_SUSPENDED": "Event suspended",
       "EVENT_UNSUSPENDED": "Event restored",
       "EVENT_DELETED": "Event deleted",
+      "EVENT_PURGED": "Purged (retention ended)",
       "REPORT_RESOLVED": "Report resolved",
       "REPORT_DISMISSED": "Report dismissed",
       "PLAN_UPDATED": "Plan updated",
@@ -612,6 +617,117 @@
     "errors": {
       "validation": "Please choose a reason. Details can be up to 1000 characters.",
       "rate_limited": "Too many reports, try again later."
+    }
+  },
+  "legal": {
+    "footer": {
+      "nav": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "updated": "Updated 21 October 2026",
+      "intro": "Majlis Ku is a digital guestbook and invitation card for events. This page explains what data we keep, why, and how you can have it deleted.",
+      "controller": {
+        "title": "Who we are",
+        "body": "Majlis Ku is run by {controller}, at {address}. We decide how your personal data is used in this service."
+      },
+      "collected": {
+        "title": "What we keep",
+        "body": "We keep only what we need.",
+        "items": [
+          "Guests: the display name you type, and a device token in a cookie. Only a salted hash of that token is stored, not the token itself.",
+          "What you send: photos, videos, voice messages and wishes.",
+          "RSVPs: name, attending or not, number of people, message, and a phone number if the host asks for one.",
+          "Abuse reports: the reason and any details you write. We do not ask for your name, email or phone number.",
+          "Hosts: the account email, name and profile picture (the picture only with Google sign-in), and the event details. Signing in with Google also keeps the sign-in tokens Google returns.",
+          "Rate limits: salted hash values and a time count to stop abuse. We do not store raw IP addresses."
+        ]
+      },
+      "purpose": {
+        "title": "Why we use it",
+        "body": "To run the guestbook and the invitation card: to show your content to the hosts, to let you change your RSVP, to protect the service from abuse, and to let hosts sign in. We do not sell your data and we do not use it for advertising."
+      },
+      "access": {
+        "title": "Who can see it",
+        "body": "An event's hosts and co-hosts see all of that event's content and RSVPs. Other guests see the gallery only if the host opens it to guests. Majlis Ku admins can see abuse reports and event data for support and moderation. Media is served through signed links that expire within an hour. A published e-card can be seen by anyone who has its link, including host names, photos, venue and date."
+      },
+      "retention": {
+        "title": "How long we keep it",
+        "body": "Guest content is kept until the retention period of the event's plan ends, counted from the event date, or from the day the event was created, its date last changed or its plan changed, whichever is latest. The plans available now:",
+        "plan": "{name}: {days} days",
+        "after": "After that, photos, videos, voice messages, wishes, RSVPs, guest records, reports and the invitation card are deleted automatically and cannot be recovered. The basic event details (title, host names, date, venue), payment records and the audit log stay. Copies already downloaded into a browser can last up to an hour."
+      },
+      "deletion": {
+        "title": "Deleting your data",
+        "body": "Hosts can delete any photo, video, voice message or wish, or the whole event, at any time from the dashboard. If you are a guest and want your content deleted, ask the host to delete it or contact us at {email}. Hosts can ask the contact email above to delete their account. Event details are kept until the host or an admin deletes the event."
+      },
+      "cookies": {
+        "title": "Cookies and local storage",
+        "body": "We do not use advertising or tracking cookies.",
+        "items": [
+          "mk_device: identifies a guest's device for one event. Lasts up to a year.",
+          "PIN cookie: only if the event has a PIN, so you do not have to enter it again.",
+          "Sign-in cookies (session and security cookies, such as CSRF and the callback URL): hosts only. All are first-party and needed for sign-in.",
+          "NEXT_LOCALE: remembers your language.",
+          "mk_consent and mk_name in the browser's local storage: remember your consent and your name on this device."
+        ]
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Questions or requests about your data: {email}, {address}."
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "updated": "Updated 21 October 2026",
+      "intro": "By using Majlis Ku you agree to these terms.",
+      "service": {
+        "title": "The service",
+        "body": "Majlis Ku is a digital guestbook (live gallery) and an invitation card with RSVP for events. The service is provided by {controller}."
+      },
+      "hostDuties": {
+        "title": "Host responsibilities",
+        "body": "If you create an event, you are responsible for:",
+        "items": [
+          "Having the right to use the content you upload.",
+          "Telling guests that their photos, videos, voice messages and wishes are shared with you and kept under the event's plan.",
+          "Using the service lawfully, and looking after your account and PIN."
+        ]
+      },
+      "prohibited": {
+        "title": "Prohibited content",
+        "body": "The following is not allowed, and anyone can report it:",
+        "items": [
+          "Sexual content.",
+          "Violence.",
+          "Hate or harassment.",
+          "Scams or spam.",
+          "Other people's photos or data shared without their permission.",
+          "Other people's work used without permission (copyright)."
+        ]
+      },
+      "suspension": {
+        "title": "Suspension and deletion",
+        "body": "Admins may suspend or delete an event or content that breaks these terms or the law, after a report or a review. Hosts can delete their own event at any time."
+      },
+      "plans": {
+        "title": "Plans and retention",
+        "body": "Each event has one plan that sets the upload limits, file sizes and retention period (see the Privacy Policy). The server enforces the limits. When the retention period ends, guest content is deleted permanently. Download your export before then."
+      },
+      "warranty": {
+        "title": "No warranty",
+        "body": "The service is provided as is. We work to keep it running, but we do not promise it will be free of interruptions or errors. Keep your own copies of your original photos. As far as the law allows, we are not liable for lost content or indirect losses."
+      },
+      "law": {
+        "title": "Governing law",
+        "body": "These terms are governed by the laws of Malaysia. Disputes are settled in the courts of Malaysia."
+      },
+      "contact": {
+        "title": "Contact",
+        "body": "Questions or complaints: {email}, {address}."
+      }
     }
   }
 }

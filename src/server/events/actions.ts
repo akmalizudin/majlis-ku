@@ -26,10 +26,11 @@ export async function createEventAction(locale: Locale, _prev: FormState, formDa
 export async function updateEventAction(locale: Locale, eventId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const user = await requireUser(locale);
   const event = await getEventForMember(eventId, user);
-  if (!event || !canEditEvent(event.memberRole)) return { errors: ["form"] };
+  if (!event || !canEditEvent(event)) return { errors: ["form"] };
   const parsed = eventFormSchema.safeParse(formToObject(formData));
   if (!parsed.success) return { errors: fieldNames(parsed.error) };
-  await updateEvent(eventId, parsed.data);
+  const { count } = await updateEvent(eventId, parsed.data);
+  if (count === 0) return { errors: ["form"] };
   revalidatePath("/", "layout");
   return { saved: true };
 }
@@ -37,11 +38,12 @@ export async function updateEventAction(locale: Locale, eventId: string, _prev: 
 export async function updateSettingsAction(locale: Locale, eventId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const user = await requireUser(locale);
   const event = await getEventForMember(eventId, user);
-  if (!event || !canEditEvent(event.memberRole)) return { errors: ["form"] };
+  if (!event || !canEditEvent(event)) return { errors: ["form"] };
   const raw = formToObject(formData);
   const parsed = eventSettingsSchema.safeParse(raw);
   if (!parsed.success) return { errors: fieldNames(parsed.error) };
-  await updateEventSettings(eventId, { ...parsed.data, clearPin: raw.clearPin === "on" });
+  const { count } = await updateEventSettings(eventId, { ...parsed.data, clearPin: raw.clearPin === "on" });
+  if (count === 0) return { errors: ["form"] };
   revalidatePath("/", "layout");
   return { saved: true };
 }

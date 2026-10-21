@@ -40,6 +40,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                   <span className="mt-2 flex flex-wrap gap-2 text-xs">
                     <span className="rounded-full bg-cream px-2 py-1">{locale === "ms" ? event.plan.nameMs : event.plan.nameEn}</span>
                     <span className="rounded-full bg-cream px-2 py-1">{t("items", { count: event.uploadCount })}</span>
+                    {event.status === "ARCHIVED" ? <span className="rounded-full bg-amber-100 px-2 py-1 text-amber-900">{t("archived")}</span> : null}
                     {event.members[0]?.role === "COHOST" ? <span className="rounded-full bg-cream px-2 py-1">{t("cohost")}</span> : null}
                   </span>
                 </Link>

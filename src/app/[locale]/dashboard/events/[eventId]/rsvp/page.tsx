@@ -64,7 +64,7 @@ export default async function RsvpPage({
             </Link>
           ))}
         </div>
-        {canEditEvent(event.memberRole) ? (
+        {canEditEvent(event) ? (
         <div className="flex gap-2">
           <a href={`${exportBase}&format=csv`} className="inline-flex min-h-11 items-center rounded-full border border-ink/20 bg-white px-4 text-sm font-medium">
             {t("csv")}

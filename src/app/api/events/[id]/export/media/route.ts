@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const GET = handle(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const { event } = await requireEventMemberApi(id);
-  if (!canEditEvent(event.memberRole)) throw new ApiError("forbidden", 403);
+  if (!canEditEvent(event)) throw new ApiError("forbidden", 403);
   const locale = new URL(request.url).searchParams.get("locale") === "en" ? "en" : "ms";
   return new Response(await eventZipStream(event, locale), {
     headers: {

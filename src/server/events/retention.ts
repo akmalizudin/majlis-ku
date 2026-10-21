@@ -16,3 +16,14 @@ export function computePurgeAt({
   const from = Math.max(startsAt.getTime(), now.getTime());
   return new Date(from + retentionDays * DAY_MS);
 }
+
+/** A host edit moves purgeAt only when the event date changes; an unchanged date keeps the stored value. */
+export function nextPurgeAt(
+  current: { startsAt: Date; purgeAt: Date | null },
+  nextStartsAt: Date,
+  retentionDays: number,
+  now = new Date(),
+): Date | null {
+  if (current.startsAt.getTime() === nextStartsAt.getTime()) return current.purgeAt;
+  return computePurgeAt({ startsAt: nextStartsAt, retentionDays, now });
+}

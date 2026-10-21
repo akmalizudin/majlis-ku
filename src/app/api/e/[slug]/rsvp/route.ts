@@ -24,7 +24,7 @@ export const POST = handle(async (request: Request, { params }: { params: Promis
   if (!parsed.success) throw new ApiError("validation", 400, parsed.error.issues.map((i) => i.message).join("; "));
 
   const deviceHash = await ensureDeviceHash();
-  if (!limiters.rsvp.hit(deviceHash).ok) throw new ApiError("rate_limited", 429);
+  if (!(await limiters.rsvp.hit(deviceHash)).ok) throw new ApiError("rate_limited", 429);
   const rsvp = await submitRsvp(event.id, deviceHash, parsed.data);
   return NextResponse.json({ id: rsvp.id }, { status: 200 });
 });

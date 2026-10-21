@@ -29,7 +29,7 @@ export default async function EditEventPage({ params }: { params: Promise<{ loca
   ]);
   const coverUrl = event.coverKey ? await storage().getDownloadUrl(event.coverKey, { expiresInSec: MEDIA_URL_TTL_SEC }) : null;
 
-  const canEdit = canEditEvent(event.memberRole); // admins who are not members see the members list only
+  const canEdit = canEditEvent(event); // admins who are not members see the members list only
 
   return (
     <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">

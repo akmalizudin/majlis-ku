@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { z } from "zod";
 import { googleEnabled, signIn } from "@/auth";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { getPathname, redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -78,6 +79,7 @@ export default async function SignInPage({
           </>
         ) : null}
       </main>
+      <SiteFooter />
     </>
   );
 }
