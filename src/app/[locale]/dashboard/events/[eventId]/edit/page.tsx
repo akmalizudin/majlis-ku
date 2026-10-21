@@ -12,7 +12,7 @@ import { updateEventAction, updateSettingsAction } from "@/server/events/actions
 import { listMembers } from "@/server/events/members";
 import { MEDIA_URL_TTL_SEC, storage } from "@/server/media/storage";
 import { deleteEventAction, inviteCohostAction, removeCohostAction } from "@/server/moderation/actions";
-import { canDeleteEvent, canManageMembers } from "@/server/moderation/rules";
+import { canDeleteEvent, canEditEvent, canManageMembers } from "@/server/moderation/rules";
 
 export default async function EditEventPage({ params }: { params: Promise<{ locale: string; eventId: string }> }) {
   const { locale, eventId } = await params;
@@ -29,8 +29,11 @@ export default async function EditEventPage({ params }: { params: Promise<{ loca
   ]);
   const coverUrl = event.coverKey ? await storage().getDownloadUrl(event.coverKey, { expiresInSec: MEDIA_URL_TTL_SEC }) : null;
 
+  const canEdit = canEditEvent(event.memberRole); // admins who are not members see the members list only
+
   return (
     <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
+      {canEdit ? (
       <section className="rounded-2xl bg-white/60 p-5">
         <h2 className="mb-4 font-serif text-2xl">{t("editTitle")}</h2>
         <EventForm
@@ -50,7 +53,10 @@ export default async function EditEventPage({ params }: { params: Promise<{ loca
           }}
         />
       </section>
+      ) : null}
       <div className="space-y-6">
+        {canEdit ? (
+        <>
         <section className="rounded-2xl bg-white/60 p-5">
           <CoverUploader
             eventId={event.id}
@@ -72,6 +78,8 @@ export default async function EditEventPage({ params }: { params: Promise<{ loca
             defaults={{ galleryVisibility: event.galleryVisibility, requireApproval: event.requireApproval, hasPin: Boolean(event.pinHash) }}
           />
         </section>
+        </>
+        ) : null}
         <section className="rounded-2xl bg-white/60 p-5">
           <MembersPanel
             members={members.map((m) => ({ userId: m.userId, email: m.user.email, role: m.role }))}

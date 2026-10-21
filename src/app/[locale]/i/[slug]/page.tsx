@@ -8,7 +8,7 @@ import { Countdown } from "@/components/card/countdown";
 import { MusicButton } from "@/components/card/music-button";
 import { RsvpForm } from "@/components/card/rsvp-form";
 import { LocaleToggle } from "@/components/locale-toggle";
-import { getPathname } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { formatEventDate, formatEventDay } from "@/lib/dates";
 import { findPublicCard, signedCardMedia } from "@/server/ecard/service";
@@ -42,13 +42,14 @@ export default async function CardPage({ params }: { params: Promise<{ locale: s
   const found = await getCard(slug);
   if (!found) notFound();
   const { event, card } = found;
-  const [t, tr, tc, messages, media, guest] = await Promise.all([
+  const [t, tr, tc, messages, media, guest, treport] = await Promise.all([
     getTranslations("card"),
     getTranslations("rsvp"),
     getTranslations("common"),
     getMessages(),
     signedCardMedia(card),
     readGuestContext(slug),
+    getTranslations("report"),
   ]);
   const existing = await findMyRsvp(event.id, guest?.deviceHash ?? null);
   const open = rsvpOpen(card.content);
@@ -123,6 +124,11 @@ export default async function CardPage({ params }: { params: Promise<{ locale: s
           ) : null
         }
       />
+      <p className="mx-auto mt-6 max-w-md text-center">
+        <Link href={`/${slug}/report`} className="inline-flex min-h-11 items-center text-sm underline" style={{ color: style.primary }}>
+          {treport("link")}
+        </Link>
+      </p>
       {media.music ? <MusicButton src={media.music} color={style.primary} labels={{ play: t("playMusic"), pause: t("pauseMusic") }} /> : null}
     </main>
   );

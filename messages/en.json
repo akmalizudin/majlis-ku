@@ -84,7 +84,9 @@
     "guestPage": "Guest page",
     "slideshow": "Slideshow",
     "card": "E-card",
-    "rsvp": "RSVP"
+    "rsvp": "RSVP",
+    "suspendedBanner": "This event has been suspended by Majlis Ku. Guests cannot open it.",
+    "adminReadOnly": "You are viewing this event as an admin. It is read-only here; changes are made from the admin panel."
   },
   "eventOverview": {
     "shareTitle": "Share with guests",
@@ -215,9 +217,224 @@
     "processingNote": "It is being processed and will appear in the gallery shortly."
   },
   "admin": {
-    "title": "Admin panel",
     "forbiddenTitle": "Access denied",
-    "forbiddenBody": "This page is for admins only."
+    "forbiddenBody": "This page is for admins only.",
+    "navLabel": "Admin sections",
+    "nav": {
+      "overview": "Overview",
+      "events": "Events",
+      "users": "Users",
+      "reports": "Reports",
+      "plans": "Plans",
+      "templates": "Templates",
+      "audit": "Audit log"
+    },
+    "saved": "Saved.",
+    "check": "Check these fields",
+    "yes": "Yes",
+    "no": "No",
+    "empty": "Nothing to show.",
+    "pager": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {page} of {pages}"
+    },
+    "filter": {
+      "search": "Search",
+      "apply": "Apply",
+      "status": "Status",
+      "plan": "Plan",
+      "allStatuses": "All statuses",
+      "allPlans": "All plans"
+    },
+    "eventStatus": {
+      "DRAFT": "Draft",
+      "ACTIVE": "Active",
+      "SUSPENDED": "Suspended",
+      "ARCHIVED": "Archived"
+    },
+    "planCode": {
+      "FREE": "Free",
+      "ECARD": "E-card",
+      "PREMIUM": "Premium"
+    },
+    "role": {
+      "HOST": "Host",
+      "ADMIN": "Admin"
+    },
+    "memberRole": {
+      "OWNER": "Owner",
+      "COHOST": "Co-host"
+    },
+    "col": {
+      "title": "Title",
+      "slug": "Slug",
+      "owner": "Owner",
+      "plan": "Plan",
+      "status": "Status",
+      "date": "Event date",
+      "uploads": "Uploads",
+      "storage": "Storage",
+      "email": "Email",
+      "name": "Name",
+      "role": "Role",
+      "inAdminList": "In ADMIN_EMAILS",
+      "signedUp": "Signed up",
+      "ownedEvents": "Events owned",
+      "time": "Time",
+      "event": "Event",
+      "reason": "Reason",
+      "details": "Details",
+      "actor": "By",
+      "action": "Action",
+      "target": "Target",
+      "summary": "Summary",
+      "actions": "Actions"
+    },
+    "overview": {
+      "users": "Users",
+      "openReports": "Open reports",
+      "storage": "Storage used",
+      "storageNote": "Original uploads only",
+      "byStatus": "Events by status",
+      "byPlan": "Events by plan",
+      "topEvents": "Events using the most storage"
+    },
+    "events": {
+      "searchLabel": "Search by slug, title, host names or owner email",
+      "total": "{count, plural, one {# event} other {# events}}"
+    },
+    "event": {
+      "back": "All events",
+      "purgeAt": "Media kept until",
+      "suspendedAt": "Suspended on",
+      "members": "Members",
+      "openReports": "Open reports",
+      "noReports": "No open reports.",
+      "hostDashboard": "Host dashboard (read-only)",
+      "guestPage": "Guest page",
+      "changePlan": "Change plan",
+      "changePlanHelp": "Sets the plan and recomputes when the media is deleted. This is not a payment.",
+      "changePlanButton": "Change plan",
+      "suspend": "Suspend event",
+      "unsuspend": "Restore event",
+      "suspendHelp": "A suspended event is closed to guests at once. The host keeps the dashboard and slideshow.",
+      "suspendedNote": "This event is suspended. Guests cannot open it.",
+      "deleteTitle": "Delete event",
+      "deleteBody": "Deletes the event, all its media and its reports for good. This cannot be undone.",
+      "deleteLabel": "Type the slug to confirm",
+      "deleteButton": "Delete event for good"
+    },
+    "users": {
+      "searchLabel": "Search by email or name",
+      "total": "{count, plural, one {# user} other {# users}}"
+    },
+    "reports": {
+      "total": "{count, plural, one {# report} other {# reports}}",
+      "OPEN": "Open",
+      "RESOLVED": "Resolved",
+      "DISMISSED": "Dismissed",
+      "ALL": "All",
+      "resolve": "Resolve",
+      "dismiss": "Dismiss",
+      "resolveFor": "Resolve report: {reason} ({slug})",
+      "dismissFor": "Dismiss report: {reason} ({slug})",
+      "note": "Resolving or dismissing a report does not suspend the event. Suspend it from the event page."
+    },
+    "reportReason": {
+      "SEXUAL": "Sexual content",
+      "VIOLENCE": "Violence",
+      "HATE": "Hate or harassment",
+      "SCAM": "Scam or spam",
+      "PRIVACY": "Privacy",
+      "COPYRIGHT": "Copyright",
+      "OTHER": "Other"
+    },
+    "plans": {
+      "intro": "Changes apply to every event on the plan straight away, because limits are read live.",
+      "includesGallery": "Guestbook gallery",
+      "includesEcard": "E-card and RSVP",
+      "nameMs": "Name (Bahasa Melayu)",
+      "nameEn": "Name (English)",
+      "price": "Price (RM)",
+      "uploadLimit": "Upload limit",
+      "uploadLimitNote": "Blank is unlimited.",
+      "videoAllowed": "Video allowed",
+      "maxVideoSeconds": "Max video length (seconds)",
+      "maxVideoSecondsNote": "Blank is 60 seconds.",
+      "maxUploadMb": "Max size per file (MB)",
+      "maxUploadMbNote": "Per-kind caps still apply: photo 15 MB, voice 10 MB, video 200 MB.",
+      "storageLimitMb": "Storage limit (MB)",
+      "storageLimitMbNote": "Blank is unlimited.",
+      "retentionDays": "Retention (days)",
+      "retentionDaysNote": "Existing events pick up a new retention when their host edits them or an admin changes their plan.",
+      "active": "Active",
+      "sortOrder": "Sort order",
+      "freeNote": "The Free plan must stay active at RM 0.",
+      "save": "Save plan"
+    },
+    "templates": {
+      "intro": "Deactivating a template hides it from the card builder for new choices. Cards already using it keep working.",
+      "create": "New template",
+      "edit": "Edit",
+      "code": "Code",
+      "codeNote": "Lowercase letters, digits and hyphens, 3 to 40 characters. It cannot be changed later.",
+      "nameMs": "Name (Bahasa Melayu)",
+      "nameEn": "Name (English)",
+      "layout": "Layout",
+      "font": "Font",
+      "primary": "Primary colour",
+      "background": "Background colour",
+      "accent": "Accent colour",
+      "active": "Active",
+      "inactive": "Inactive",
+      "sortOrder": "Sort order",
+      "save": "Save template",
+      "createButton": "Create template",
+      "layoutOption": {
+        "classic": "Classic",
+        "modern": "Modern",
+        "floral": "Floral"
+      },
+      "fontOption": {
+        "serif": "Serif",
+        "sans": "Sans-serif"
+      }
+    },
+    "audit": {
+      "note": "Times are in Malaysia time. Guest names and messages are never recorded here.",
+      "changed": "changed: {fields}"
+    },
+    "auditAction": {
+      "EVENT_PLAN_CHANGED": "Event plan changed",
+      "EVENT_SUSPENDED": "Event suspended",
+      "EVENT_UNSUSPENDED": "Event restored",
+      "EVENT_DELETED": "Event deleted",
+      "REPORT_RESOLVED": "Report resolved",
+      "REPORT_DISMISSED": "Report dismissed",
+      "PLAN_UPDATED": "Plan updated",
+      "TEMPLATE_CREATED": "Template created",
+      "TEMPLATE_UPDATED": "Template updated"
+    },
+    "targetType": {
+      "event": "Event",
+      "report": "Report",
+      "plan": "Plan",
+      "template": "Template"
+    },
+    "error": {
+      "forbidden": "You do not have access to this action.",
+      "validation": "Some fields are invalid.",
+      "not_found": "Not found. It may have been deleted.",
+      "invalid_plan": "That plan is not available.",
+      "same_plan": "The event is already on that plan.",
+      "invalid_status": "This is not possible in the current status.",
+      "confirm": "The slug you typed does not match.",
+      "has_payments": "This event has payments and cannot be deleted.",
+      "free_required": "The Free plan must stay active and cost RM 0.",
+      "code_taken": "That template code is already used.",
+      "last_active_template": "At least one template must stay active."
+    }
   },
   "event": {
     "notFound": "Event not found",
@@ -372,5 +589,29 @@
     "csv": "Download CSV",
     "xlsx": "Download Excel",
     "noCard": "Publish the e-card with RSVP open to start collecting replies."
+  },
+  "report": {
+    "link": "Report this event",
+    "title": "Report this event",
+    "intro": "Tell us what is wrong. You do not need to give your name or contact details.",
+    "reasonLegend": "What is the problem?",
+    "reasons": {
+      "SEXUAL": "Sexual content",
+      "VIOLENCE": "Violence",
+      "HATE": "Hate or harassment",
+      "SCAM": "Scam or spam",
+      "PRIVACY": "Privacy: my photo or data was shared without my permission",
+      "COPYRIGHT": "Copyright: this uses my work without permission",
+      "OTHER": "Something else"
+    },
+    "detailsLabel": "Details (optional)",
+    "detailsHint": "Up to 1000 characters. Please do not include personal details.",
+    "submit": "Send report",
+    "thanksTitle": "Thank you",
+    "thanksBody": "We received your report and will look into it.",
+    "errors": {
+      "validation": "Please choose a reason. Details can be up to 1000 characters.",
+      "rate_limited": "Too many reports, try again later."
+    }
   }
 }

@@ -1,6 +1,6 @@
 # Majlis Ku: Codebase Handbook (Claude Code)
 
-Owner: Izzham Burhan, TMRND. Last updated: 2026-10-20.
+Owner: Izzham Burhan, TMRND. Last updated: 2026-10-21.
 Other agent platforms (Codex, Gemini CLI, Copilot) read `AGENTS.md`. This file is the Claude Code entry point. Both files describe the same project and rules; keep them in sync.
 
 ## What this is
@@ -79,12 +79,12 @@ Do not change the stack or add a paid service without the developer's approval.
 
 ## Layout
 
-Target layout once Phase 1 lands (see `docs/specs/phase-1-setup.md` for the full tree):
+Current layout (`docs/specs/phase-1-setup.md` has the original tree):
 
 ```
-src/app/                 Next.js App Router: [locale]/(guest), (host)/dashboard, (admin)/admin, api/
-src/server/              server-only domain modules: events, uploads, wishes, rsvp, plans, payments, media, auth
-src/server/payments/     PaymentProvider interface and one adapter per gateway
+src/app/                 Next.js App Router: [locale]/[slug] (guest), [locale]/i/[slug] (card), [locale]/dashboard, [locale]/admin, api/
+src/server/              server-only domain modules: events, uploads, wishes, rsvp, plans, media, auth, admin, reports, ...
+src/server/payments/     PaymentProvider interface and one adapter per gateway (phase 6, not created yet)
 src/lib/                 isomorphic helpers: zod schemas, money (sen), dates (Asia/Kuala_Lumpur), i18n
 src/components/          UI; guest components kept light (no heavy client libraries)
 messages/                i18n strings: ms.json (default), en.json
@@ -112,7 +112,7 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 | 4 Moderation and export: approve, hide, delete, approve all, ZIP of originals plus wishes PDF and CSV, co-host invites, delete event | done |
 | 5 E-card and RSVP: 3 templates, builder with photos and music, public card at `/i/{slug}` with countdown, maps, calendar, OG image, RSVP with edit, list with CSV and Excel | done |
 | 6 Payments and plans | deferred by the developer (plans and limits still enforced) |
-| 7 Admin panel | not started |
+| 7 Admin panel: overview, events (plan change, suspend, delete), users, abuse reports with a guest report form, plans and prices, templates, audit log; admins read-only on host dashboards | done |
 | 8 Hardening | not started |
 
 ## Commands
@@ -120,7 +120,7 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 First run: `npm install`, `cp .env.example .env` (fill `AUTH_SECRET` with `npx auth secret` and `HASH_SALT` with any long random string), then the commands below.
 
 ```bash
-npm run db:start             # local PostgreSQL on port 5433 (embedded-postgres); keep it running in its own terminal
+npm run db:start             # local PostgreSQL on the DATABASE_URL port, 5433 by default (embedded-postgres); keep it running in its own terminal
 npx prisma migrate dev       # apply migrations to the local database
 npx prisma db seed           # plans, templates, demo host, admin, demo event (safe to run twice)
 npm run dev                  # http://localhost:3000 ; the demo guest page is /demo-aisyah-daniel
@@ -133,13 +133,13 @@ node scripts/skills.mjs sync   # regenerate .codex/skills and .codex/agents
 node scripts/skills.mjs check  # fail if the twins differ
 ```
 
-Sign in locally: enter any email on `/signin`; with `EMAIL_SERVER` empty, the magic link is printed in the `npm run dev` log and appended to `.data/dev-mail.log`. Emails in `ADMIN_EMAILS` (default `admin@majlisku.test`) become admins on sign-in.
+Sign in locally: enter any email on `/signin`; with `EMAIL_SERVER` empty, the magic link is printed in the `npm run dev` log and appended to `.data/dev-mail.log`. Emails in `ADMIN_EMAILS` (default `admin@majlisku.test`) become admins on sign-in; admin access is checked against the list on every request, so removing an email revokes it. Admins can view any host dashboard but change things only through `/admin`, which writes an audit log.
 
 Try it on a phone on the same Wi-Fi: set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` in `.env` to `http://<your-LAN-IP>:3000`, run `npm run dev -- -H 0.0.0.0`, and scan the QR code from the event page.
 
 `NEXT_PUBLIC_APP_URL` is read at runtime through `env()` (QR codes, share links, `metadataBase`); never read `process.env.NEXT_PUBLIC_*` directly in server code, because Next.js freezes it at build time.
 
-Gotchas: do not run `next dev` and `next build` at the same time (they share `.next/`); stop old `next start` processes before e2e, or Playwright reuses a stale server. If an installed PostgreSQL already uses port 5432, that is fine: the embedded one uses 5433.
+Gotchas: do not run `next dev` and `next build` at the same time (they share `.next/`); stop old `next start` processes before e2e, or Playwright reuses a stale server. If an installed PostgreSQL already uses port 5432, that is fine: the embedded one uses 5433. If something else holds 5433 (for example another project's Docker container), change the port in `DATABASE_URL` in your `.env` (for example 5434); `db:start` reads it from there.
 
 ## Rules
 

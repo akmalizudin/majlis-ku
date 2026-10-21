@@ -8,6 +8,7 @@ import { getPathname, Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { requireEventMember } from "@/server/events/access";
 import { GALLERY_FILTERS, galleryQuerySchema, listGallery } from "@/server/gallery/service";
+import { canModerate } from "@/server/moderation/rules";
 import { pendingCount } from "@/server/moderation/service";
 
 export default async function HostGalleryPage({
@@ -36,10 +37,12 @@ export default async function HostGalleryPage({
     { status: "pending" as const, label: `${tm("statusPending")}${waiting ? ` (${waiting})` : ""}` },
     { status: "hidden" as const, label: tm("statusHidden") },
   ];
+  const canMod = canModerate(event.memberRole); // admins who are not members are read-only here (export included)
   const download = "inline-flex min-h-11 items-center rounded-full border border-ink/20 bg-white px-4 text-sm font-medium";
 
   return (
     <div className="space-y-4">
+      {canMod ? (
       <section className="flex flex-wrap items-center gap-2 rounded-2xl bg-white/60 p-3">
         <span className="text-sm font-medium">{tx("title")}:</span>
         <a href={`/api/events/${event.id}/export/media?locale=${locale}`} className={download} data-testid="export-zip" title={tx("zipHelp")}>
@@ -49,6 +52,7 @@ export default async function HostGalleryPage({
           {tx("pdf")}
         </a>
       </section>
+      ) : null}
 
       <GalleryToolbar
         base={base}
@@ -67,7 +71,7 @@ export default async function HostGalleryPage({
             {label}
           </Link>
         ))}
-        {waiting > 0 ? <ApproveAllButton eventId={event.id} label={tm("approveAll", { count: waiting })} /> : null}
+        {canMod && waiting > 0 ? <ApproveAllButton eventId={event.id} label={tm("approveAll", { count: waiting })} /> : null}
       </div>
 
       {!query.after && query.sort === "newest" && query.status === "all" ? (
@@ -85,7 +89,7 @@ export default async function HostGalleryPage({
         items={page.items}
         labels={labels}
         showStatus
-        actions={(item) => <ModerationActions eventId={event.id} type={item.type} id={item.id} moderation={item.moderation} labels={moderationLabels} />}
+        actions={canMod ? (item) => <ModerationActions eventId={event.id} type={item.type} id={item.id} moderation={item.moderation} labels={moderationLabels} /> : undefined}
       />
       {page.nextCursor ? (
         <div className="text-center">

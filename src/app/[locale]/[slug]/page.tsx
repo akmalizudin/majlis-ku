@@ -6,7 +6,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { cache } from "react";
 import { GuestActions } from "@/components/guest/guest-actions";
 import { LocaleToggle } from "@/components/locale-toggle";
-import { getPathname } from "@/i18n/navigation";
+import { getPathname, Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { formatEventDate } from "@/lib/dates";
 import { readGuestContext } from "@/server/guests/context";
@@ -27,7 +27,7 @@ export default async function GuestEventPage({ params }: { params: Promise<{ loc
   const context = await getContext(slug);
   if (!context) notFound();
   const { event, guest, pinOk } = context;
-  const [t, tc, messages] = await Promise.all([getTranslations("event"), getTranslations("common"), getMessages()]);
+  const [t, tc, messages, tr] = await Promise.all([getTranslations("event"), getTranslations("common"), getMessages(), getTranslations("report")]);
   const coverUrl = event.coverKey && pinOk ? await storage().getDownloadUrl(event.coverKey, { expiresInSec: MEDIA_URL_TTL_SEC }) : null;
   const galleryHref = event.galleryVisibility === "GUESTS" ? getPathname({ href: `/${slug}/gallery`, locale: locale as Locale }) : null;
 
@@ -62,6 +62,11 @@ export default async function GuestEventPage({ params }: { params: Promise<{ loc
           />
         </NextIntlClientProvider>
       ) : null}
+      <p className="mt-8 text-center">
+        <Link href={`/${slug}/report`} className="inline-flex min-h-11 items-center text-sm text-ink/60 underline">
+          {tr("link")}
+        </Link>
+      </p>
     </main>
   );
 }

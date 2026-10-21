@@ -40,4 +40,5 @@ export const limiters = {
   guestJoin: createRateLimiter({ limit: 30, windowMs: 10 * MINUTE }),
   pinAttempt: createRateLimiter({ limit: 5, windowMs: 10 * MINUTE }),
   rsvp: createRateLimiter({ limit: 10, windowMs: 10 * MINUTE }),
+  report: createRateLimiter({ limit: 5, windowMs: 10 * MINUTE }),
 };

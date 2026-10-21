@@ -4,6 +4,7 @@ import type { Locale } from "@/i18n/routing";
 import { utcToKlLocal } from "@/lib/dates";
 import { getCard } from "@/server/ecard/service";
 import { requireEventMember } from "@/server/events/access";
+import { canEditEvent } from "@/server/moderation/rules";
 import { rsvpTotals } from "@/server/rsvp/rules";
 import { listRsvps } from "@/server/rsvp/service";
 
@@ -63,6 +64,7 @@ export default async function RsvpPage({
             </Link>
           ))}
         </div>
+        {canEditEvent(event.memberRole) ? (
         <div className="flex gap-2">
           <a href={`${exportBase}&format=csv`} className="inline-flex min-h-11 items-center rounded-full border border-ink/20 bg-white px-4 text-sm font-medium">
             {t("csv")}
@@ -71,6 +73,7 @@ export default async function RsvpPage({
             {t("xlsx")}
           </a>
         </div>
+        ) : null}
       </div>
       {rows.length === 0 ? (
         <p className="rounded-2xl bg-white p-6 text-center text-ink/60">{t("empty")}</p>

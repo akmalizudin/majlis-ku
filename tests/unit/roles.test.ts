@@ -16,9 +16,12 @@ describe("isAdminEmail", () => {
 });
 
 describe("canAccessAdmin", () => {
-  it("allows only the ADMIN role", () => {
-    expect(canAccessAdmin({ role: "ADMIN" })).toBe(true);
-    expect(canAccessAdmin({ role: "HOST" })).toBe(false);
-    expect(canAccessAdmin(null)).toBe(false);
+  const admins = ["admin@example.com"];
+
+  it("requires the ADMIN role and an email still in ADMIN_EMAILS", () => {
+    expect(canAccessAdmin({ role: "ADMIN", email: "gone@example.com" }, admins)).toBe(false);
+    expect(canAccessAdmin({ role: "ADMIN", email: " Admin@Example.com " }, admins)).toBe(true);
+    expect(canAccessAdmin({ role: "HOST", email: "admin@example.com" }, admins)).toBe(false);
+    expect(canAccessAdmin(null, admins)).toBe(false);
   });
 });

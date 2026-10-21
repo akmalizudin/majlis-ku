@@ -16,7 +16,7 @@ export default async function EventOverviewPage({ params }: { params: Promise<{ 
   const planName = locale === "ms" ? event.plan.nameMs : event.plan.nameEn;
   const whatsapp = `https://wa.me/?text=${encodeURIComponent(t("whatsappText", { names: event.hostNames, url }))}`;
   const limit = event.plan.uploadLimit;
-  const percent = limit ? Math.min(100, Math.round((event.uploadCount / limit) * 100)) : null;
+  const percent = limit === null ? null : limit === 0 ? 100 : Math.min(100, Math.round((event.uploadCount / limit) * 100));
   const download = "inline-flex min-h-11 items-center rounded-full border border-ink/20 bg-white px-4 text-sm font-medium";
 
   return (
@@ -61,7 +61,7 @@ export default async function EventOverviewPage({ params }: { params: Promise<{ 
         {event.plan.includesGallery ? (
           <>
             <p className="mt-3 font-medium" data-testid="usage-items">
-              {limit ? t("itemsUsed", { used: event.uploadCount, limit }) : t("itemsUnlimited", { used: event.uploadCount })}
+              {limit !== null ? t("itemsUsed", { used: event.uploadCount, limit }) : t("itemsUnlimited", { used: event.uploadCount })}
             </p>
             {percent !== null ? (
               <div className="mt-2 h-3 overflow-hidden rounded-full bg-ink/10" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>

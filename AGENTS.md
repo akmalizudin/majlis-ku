@@ -50,18 +50,18 @@ Next.js (App Router), TypeScript strict, Tailwind CSS, PWA. PostgreSQL with Pris
 
 ## Layout
 
-`src/app/` App Router routes (guest, host dashboard, admin, api). `src/server/<domain>/` server-only domain logic (events, uploads, wishes, rsvp, plans, payments, media, auth). `src/lib/` zod schemas, money in sen, dates, i18n. `src/components/` UI. `messages/` `ms.json` (default) and `en.json`. `prisma/` schema, migrations, seed. `tests/unit/` Vitest, `tests/e2e/` Playwright. `docs/brief.md` the product brief; `docs/specs/` and `docs/plans/` per phase. `playbook.md` the process. `.codex/skills/` process and guard skills (source in `.claude/skills/`). `.codex/agents/` role agents (source in `.claude/agents/`). `scripts/` worktree, skill and agent sync, and local Postgres (`db.mjs`). `.github/` CI and PR template. `.mcp.json` MCP servers (Playwright, Prisma). Full tree in `docs/specs/phase-1-setup.md`.
+`src/app/` App Router routes (guest, host dashboard, admin, api). `src/server/<domain>/` server-only domain logic (events, uploads, wishes, rsvp, plans, media, auth, admin, reports, ...). Routes live under `src/app/[locale]/` (`[slug]` guest, `i/[slug]` card, `dashboard`, `admin`) and `src/app/api/`. `src/lib/` zod schemas, money in sen, dates, i18n. `src/components/` UI. `messages/` `ms.json` (default) and `en.json`. `prisma/` schema, migrations, seed. `tests/unit/` Vitest, `tests/e2e/` Playwright. `docs/brief.md` the product brief; `docs/specs/` and `docs/plans/` per phase. `playbook.md` the process. `.codex/skills/` process and guard skills (source in `.claude/skills/`). `.codex/agents/` role agents (source in `.claude/agents/`). `scripts/` worktree, skill and agent sync, and local Postgres (`db.mjs`). `.github/` CI and PR template. `.mcp.json` MCP servers (Playwright, Prisma). Full tree in `docs/specs/phase-1-setup.md`.
 
 ## Status
 
-Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) 3 (video and voice with ffmpeg, live gallery over SSE, slideshow) 4 (moderation, ZIP and wishes PDF export, co-hosts, delete event) and 5 (e-card templates and builder, public card with RSVP, OG image, RSVP exports) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phases 7 and 8 have not started.
+Phases 0 (collaboration scaffolding), 1 (setup: schema, auth, i18n, layout) 2 (guestbook MVP: events, QR, guest photo and wish upload, galleries, PIN) 3 (video and voice with ffmpeg, live gallery over SSE, slideshow) 4 (moderation, ZIP and wishes PDF export, co-hosts, delete event) 5 (e-card templates and builder, public card with RSVP, OG image, RSVP exports) and 7 (admin panel: events with plan change, suspend and delete, users, abuse reports, plans and prices, templates, audit log) are done. Phase 6 (payments) is deferred by the developer; plans and limits are still enforced. Phase 8 has not started.
 
 ## Commands
 
 First run: `npm install`, `cp .env.example .env` (fill `AUTH_SECRET` with `npx auth secret` and `HASH_SALT` with any long random string).
 
 ```bash
-npm run db:start             # local PostgreSQL on port 5433; keep it running
+npm run db:start             # local PostgreSQL on the DATABASE_URL port (5433 by default); keep it running
 npx prisma migrate dev
 npx prisma db seed           # safe to run twice
 npm run dev                  # http://localhost:3000 ; demo guest page /demo-aisyah-daniel
@@ -74,7 +74,7 @@ node scripts/skills.mjs sync
 node scripts/skills.mjs check
 ```
 
-Local sign-in: with `EMAIL_SERVER` empty the magic link is printed in the server log and appended to `.data/dev-mail.log`; emails in `ADMIN_EMAILS` become admins. To test on a phone, set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` to `http://<LAN-IP>:3000` and run `npm run dev -- -H 0.0.0.0`. Read `NEXT_PUBLIC_APP_URL` through `env()` in server code, never `process.env.NEXT_PUBLIC_*` (frozen at build time). Do not run `next dev` and `next build` together (shared `.next/`), and stop old `next start` processes before e2e.
+Local sign-in: with `EMAIL_SERVER` empty the magic link is printed in the server log and appended to `.data/dev-mail.log`; emails in `ADMIN_EMAILS` become admins, checked on every request (removing an email revokes access); admins are read-only on host dashboards and act through `/admin`. If port 5433 is taken, change the port in `DATABASE_URL` in `.env`. To test on a phone, set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` to `http://<LAN-IP>:3000` and run `npm run dev -- -H 0.0.0.0`. Read `NEXT_PUBLIC_APP_URL` through `env()` in server code, never `process.env.NEXT_PUBLIC_*` (frozen at build time). Do not run `next dev` and `next build` together (shared `.next/`), and stop old `next start` processes before e2e.
 
 ## Rules
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { GalleryItem } from "@/server/gallery/items";
-import { createBus, toGuestMessage, type BusMessage } from "@/server/realtime/bus";
+import { createBus, toGuestMessage, toHostMessage, type BusMessage } from "@/server/realtime/bus";
 
 const photo: GalleryItem = {
   type: "upload",
@@ -63,5 +63,17 @@ describe("toGuestMessage", () => {
 
   it("passes removals through", () => {
     expect(toGuestMessage({ type: "remove", id: "u1" })).toEqual({ type: "remove", id: "u1" });
+  });
+});
+
+describe("closed message", () => {
+  it("passes closed to guests", () => {
+    expect(toGuestMessage({ type: "closed" })).toEqual({ type: "closed" });
+  });
+
+  it("drops closed for hosts", () => {
+    expect(toHostMessage({ type: "closed" })).toBeNull();
+    expect(toHostMessage({ type: "remove", id: "u1" })).toEqual({ type: "remove", id: "u1" });
+    expect(toHostMessage({ type: "item", item: photo })).toEqual({ type: "item", item: photo });
   });
 });

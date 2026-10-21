@@ -6,6 +6,7 @@ import { redirect } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { eventFormSchema, eventSettingsSchema, formToObject } from "@/lib/schemas/event";
 import { requireUser } from "@/server/auth/session";
+import { canEditEvent } from "@/server/moderation/rules";
 import { createEvent, getEventForMember, updateEvent, updateEventSettings } from "./service";
 
 export type FormState = { errors?: string[]; saved?: boolean };
@@ -24,7 +25,8 @@ export async function createEventAction(locale: Locale, _prev: FormState, formDa
 
 export async function updateEventAction(locale: Locale, eventId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const user = await requireUser(locale);
-  if (!(await getEventForMember(eventId, user))) return { errors: ["form"] };
+  const event = await getEventForMember(eventId, user);
+  if (!event || !canEditEvent(event.memberRole)) return { errors: ["form"] };
   const parsed = eventFormSchema.safeParse(formToObject(formData));
   if (!parsed.success) return { errors: fieldNames(parsed.error) };
   await updateEvent(eventId, parsed.data);
@@ -34,7 +36,8 @@ export async function updateEventAction(locale: Locale, eventId: string, _prev: 
 
 export async function updateSettingsAction(locale: Locale, eventId: string, _prev: FormState, formData: FormData): Promise<FormState> {
   const user = await requireUser(locale);
-  if (!(await getEventForMember(eventId, user))) return { errors: ["form"] };
+  const event = await getEventForMember(eventId, user);
+  if (!event || !canEditEvent(event.memberRole)) return { errors: ["form"] };
   const raw = formToObject(formData);
   const parsed = eventSettingsSchema.safeParse(raw);
   if (!parsed.success) return { errors: fieldNames(parsed.error) };

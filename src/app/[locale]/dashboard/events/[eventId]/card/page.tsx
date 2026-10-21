@@ -7,18 +7,23 @@ import { env } from "@/lib/env";
 import { DEFAULT_CARD } from "@/lib/schemas/card";
 import { getCard, listTemplates, signedCardMedia } from "@/server/ecard/service";
 import { requireEventMember } from "@/server/events/access";
+import { canModerate } from "@/server/moderation/rules";
 
 export default async function CardBuilderPage({ params }: { params: Promise<{ locale: string; eventId: string }> }) {
   const { locale, eventId } = await params;
   setRequestLocale(locale);
   const { event } = await requireEventMember(locale as Locale, eventId);
-  const [t, tc, messages] = await Promise.all([getTranslations("ecard"), getTranslations("common"), getMessages()]);
+  const [t, tc, tn, messages] = await Promise.all([getTranslations("ecard"), getTranslations("common"), getTranslations("eventNav"), getMessages()]);
 
   if (!event.plan.includesEcard) {
     return <p className="rounded-2xl bg-white p-6 text-ink/70">{t("locked")}</p>;
   }
 
-  const [templates, card] = await Promise.all([listTemplates(), getCard(event.id)]);
+  // An admin who is not a member only sees the note, so skip loading templates, card and signed media.
+  const editable = canModerate(event.memberRole);
+  const [templates, card] = editable ? await Promise.all([listTemplates(), getCard(event.id)]) : [[], null];
+  // A deactivated template the card still uses stays visible as the selected tile.
+  if (card && !templates.some((tpl) => tpl.id === card.templateId)) templates.push({ ...card.template, style: card.style });
   const content = card?.content ?? { ...DEFAULT_CARD, names: event.hostNames, headline: event.title };
   const media = card ? await signedCardMedia(card) : { photos: [], music: null };
   const url = `${env().NEXT_PUBLIC_APP_URL.replace(/\/+$/, "")}/i/${event.slug}`;
@@ -28,6 +33,7 @@ export default async function CardBuilderPage({ params }: { params: Promise<{ lo
     <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
       <div>
         <h2 className="mb-4 font-serif text-3xl">{t("title")}</h2>
+        {editable ? (
         <NextIntlClientProvider messages={{ ecard: messages.ecard }}>
           <CardBuilder
             eventId={event.id}
@@ -37,6 +43,9 @@ export default async function CardBuilderPage({ params }: { params: Promise<{ lo
             musicUrl={media.music}
           />
         </NextIntlClientProvider>
+        ) : (
+          <p className="rounded-2xl bg-white p-6 text-ink/70">{tn("adminReadOnly")}</p>
+        )}
       </div>
       <aside className="h-fit space-y-3 rounded-2xl bg-white p-5 shadow-sm lg:sticky lg:top-4">
         <p className="text-sm font-medium">{t("shareLink")}</p>
