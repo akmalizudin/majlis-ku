@@ -16,13 +16,18 @@ export function nextModeration(current: ModerationState, action: ModerationActio
 }
 
 export function canModerate(role: MemberRole): boolean {
-  return role === "OWNER" || role === "COHOST" || role === "ADMIN";
+  return role === "OWNER" || role === "COHOST";
+}
+
+/** Admins are read-only on host dashboards; they act through /admin. */
+export function canEditEvent(role: MemberRole): boolean {
+  return role === "OWNER" || role === "COHOST";
 }
 
 export function canManageMembers(role: MemberRole): boolean {
-  return role === "OWNER" || role === "ADMIN";
+  return role === "OWNER";
 }
 
 export function canDeleteEvent(role: MemberRole): boolean {
-  return role === "OWNER" || role === "ADMIN";
+  return role === "OWNER";
 }

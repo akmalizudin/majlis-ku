@@ -84,7 +84,9 @@
     "guestPage": "Halaman tetamu",
     "slideshow": "Tayangan slaid",
     "card": "Kad jemputan",
-    "rsvp": "RSVP"
+    "rsvp": "RSVP",
+    "suspendedBanner": "Majlis ini telah digantung oleh Majlis Ku. Tetamu tidak dapat membukanya.",
+    "adminReadOnly": "Anda melihat majlis ini sebagai admin. Paparan ini baca sahaja; perubahan dibuat dari panel admin."
   },
   "eventOverview": {
     "shareTitle": "Kongsi dengan tetamu",
@@ -215,9 +217,224 @@
     "processingNote": "Ia sedang diproses dan akan muncul dalam galeri sebentar lagi."
   },
   "admin": {
-    "title": "Panel admin",
     "forbiddenTitle": "Akses ditolak",
-    "forbiddenBody": "Halaman ini hanya untuk admin."
+    "forbiddenBody": "Halaman ini hanya untuk admin.",
+    "navLabel": "Bahagian admin",
+    "nav": {
+      "overview": "Ringkasan",
+      "events": "Majlis",
+      "users": "Pengguna",
+      "reports": "Laporan",
+      "plans": "Pelan",
+      "templates": "Templat",
+      "audit": "Log audit"
+    },
+    "saved": "Disimpan.",
+    "check": "Semak medan ini",
+    "yes": "Ya",
+    "no": "Tidak",
+    "empty": "Tiada apa-apa untuk dipaparkan.",
+    "pager": {
+      "prev": "Sebelumnya",
+      "next": "Seterusnya",
+      "page": "Halaman {page} daripada {pages}"
+    },
+    "filter": {
+      "search": "Cari",
+      "apply": "Tapis",
+      "status": "Status",
+      "plan": "Pelan",
+      "allStatuses": "Semua status",
+      "allPlans": "Semua pelan"
+    },
+    "eventStatus": {
+      "DRAFT": "Draf",
+      "ACTIVE": "Aktif",
+      "SUSPENDED": "Digantung",
+      "ARCHIVED": "Diarkibkan"
+    },
+    "planCode": {
+      "FREE": "Percuma",
+      "ECARD": "Kad Jemputan",
+      "PREMIUM": "Premium"
+    },
+    "role": {
+      "HOST": "Tuan rumah",
+      "ADMIN": "Admin"
+    },
+    "memberRole": {
+      "OWNER": "Pemilik",
+      "COHOST": "Tuan rumah bersama"
+    },
+    "col": {
+      "title": "Tajuk",
+      "slug": "Slug",
+      "owner": "Pemilik",
+      "plan": "Pelan",
+      "status": "Status",
+      "date": "Tarikh majlis",
+      "uploads": "Muat naik",
+      "storage": "Storan",
+      "email": "E-mel",
+      "name": "Nama",
+      "role": "Peranan",
+      "inAdminList": "Dalam ADMIN_EMAILS",
+      "signedUp": "Daftar pada",
+      "ownedEvents": "Majlis dimiliki",
+      "time": "Masa",
+      "event": "Majlis",
+      "reason": "Sebab",
+      "details": "Butiran",
+      "actor": "Oleh",
+      "action": "Tindakan",
+      "target": "Sasaran",
+      "summary": "Ringkasan",
+      "actions": "Tindakan"
+    },
+    "overview": {
+      "users": "Pengguna",
+      "openReports": "Laporan terbuka",
+      "storage": "Storan digunakan",
+      "storageNote": "Muat naik asal sahaja",
+      "byStatus": "Majlis mengikut status",
+      "byPlan": "Majlis mengikut pelan",
+      "topEvents": "Majlis dengan storan terbanyak"
+    },
+    "events": {
+      "searchLabel": "Cari mengikut slug, tajuk, nama tuan rumah atau e-mel pemilik",
+      "total": "{count, plural, other {# majlis}}"
+    },
+    "event": {
+      "back": "Semua majlis",
+      "purgeAt": "Media disimpan sehingga",
+      "suspendedAt": "Digantung pada",
+      "members": "Ahli",
+      "openReports": "Laporan terbuka",
+      "noReports": "Tiada laporan terbuka.",
+      "hostDashboard": "Papan pemuka tuan rumah (baca sahaja)",
+      "guestPage": "Halaman tetamu",
+      "changePlan": "Tukar pelan",
+      "changePlanHelp": "Menetapkan pelan dan mengira semula bila media dipadam. Ini bukan pembayaran.",
+      "changePlanButton": "Tukar pelan",
+      "suspend": "Gantung majlis",
+      "unsuspend": "Pulihkan",
+      "suspendHelp": "Majlis yang digantung ditutup kepada tetamu serta-merta. Tuan rumah masih boleh guna papan pemuka dan tayangan slaid.",
+      "suspendedNote": "Majlis ini digantung. Tetamu tidak boleh membukanya.",
+      "deleteTitle": "Padam majlis",
+      "deleteBody": "Memadam majlis, semua medianya dan laporannya secara kekal. Tindakan ini tidak boleh dibatalkan.",
+      "deleteLabel": "Taip slug untuk mengesahkan",
+      "deleteButton": "Padam majlis secara kekal"
+    },
+    "users": {
+      "searchLabel": "Cari mengikut e-mel atau nama",
+      "total": "{count, plural, other {# pengguna}}"
+    },
+    "reports": {
+      "total": "{count, plural, other {# laporan}}",
+      "OPEN": "Terbuka",
+      "RESOLVED": "Selesai",
+      "DISMISSED": "Diketepikan",
+      "ALL": "Semua",
+      "resolve": "Selesaikan",
+      "dismiss": "Ketepikan",
+      "resolveFor": "Selesaikan laporan: {reason} ({slug})",
+      "dismissFor": "Ketepikan laporan: {reason} ({slug})",
+      "note": "Menyelesaikan atau mengetepikan laporan tidak menggantung majlis. Gantung majlis dari halaman majlis."
+    },
+    "reportReason": {
+      "SEXUAL": "Kandungan seksual",
+      "VIOLENCE": "Keganasan",
+      "HATE": "Kebencian atau gangguan",
+      "SCAM": "Penipuan atau spam",
+      "PRIVACY": "Privasi",
+      "COPYRIGHT": "Hak cipta",
+      "OTHER": "Lain-lain"
+    },
+    "plans": {
+      "intro": "Perubahan terpakai serta-merta pada setiap majlis dalam pelan itu, kerana had dibaca secara langsung.",
+      "includesGallery": "Galeri buku tetamu",
+      "includesEcard": "Kad jemputan dan RSVP",
+      "nameMs": "Nama (Bahasa Melayu)",
+      "nameEn": "Nama (English)",
+      "price": "Harga (RM)",
+      "uploadLimit": "Had muat naik",
+      "uploadLimitNote": "Kosong bermaksud tanpa had.",
+      "videoAllowed": "Video dibenarkan",
+      "maxVideoSeconds": "Panjang video maksimum (saat)",
+      "maxVideoSecondsNote": "Kosong bermaksud 60 saat.",
+      "maxUploadMb": "Saiz maksimum setiap fail (MB)",
+      "maxUploadMbNote": "Had mengikut jenis masih terpakai: foto 15 MB, suara 10 MB, video 200 MB.",
+      "storageLimitMb": "Had storan (MB)",
+      "storageLimitMbNote": "Kosong bermaksud tanpa had.",
+      "retentionDays": "Tempoh simpanan (hari)",
+      "retentionDaysNote": "Majlis sedia ada menerima tempoh simpanan baharu apabila tuan rumahnya mengemas kini majlis atau admin menukar pelannya.",
+      "active": "Aktif",
+      "sortOrder": "Susunan",
+      "freeNote": "Pelan Percuma mesti kekal aktif pada harga RM 0.",
+      "save": "Simpan pelan"
+    },
+    "templates": {
+      "intro": "Menyahaktifkan templat menyembunyikannya daripada pembina kad untuk pilihan baharu. Kad yang sudah menggunakannya terus berfungsi.",
+      "create": "Templat baharu",
+      "edit": "Sunting",
+      "code": "Kod",
+      "codeNote": "Huruf kecil, nombor dan sempang, 3 hingga 40 aksara. Tidak boleh diubah kemudian.",
+      "nameMs": "Nama (Bahasa Melayu)",
+      "nameEn": "Nama (English)",
+      "layout": "Susun atur",
+      "font": "Fon",
+      "primary": "Warna utama",
+      "background": "Warna latar",
+      "accent": "Warna aksen",
+      "active": "Aktif",
+      "inactive": "Tidak aktif",
+      "sortOrder": "Susunan",
+      "save": "Simpan templat",
+      "createButton": "Cipta templat",
+      "layoutOption": {
+        "classic": "Klasik",
+        "modern": "Moden",
+        "floral": "Bunga"
+      },
+      "fontOption": {
+        "serif": "Serif",
+        "sans": "Sans-serif"
+      }
+    },
+    "audit": {
+      "note": "Masa dalam waktu Malaysia. Nama dan mesej tetamu tidak pernah direkodkan di sini.",
+      "changed": "diubah: {fields}"
+    },
+    "auditAction": {
+      "EVENT_PLAN_CHANGED": "Pelan majlis ditukar",
+      "EVENT_SUSPENDED": "Majlis digantung",
+      "EVENT_UNSUSPENDED": "Majlis dipulihkan",
+      "EVENT_DELETED": "Majlis dipadam",
+      "REPORT_RESOLVED": "Laporan diselesaikan",
+      "REPORT_DISMISSED": "Laporan diketepikan",
+      "PLAN_UPDATED": "Pelan dikemas kini",
+      "TEMPLATE_CREATED": "Templat dicipta",
+      "TEMPLATE_UPDATED": "Templat dikemas kini"
+    },
+    "targetType": {
+      "event": "Majlis",
+      "report": "Laporan",
+      "plan": "Pelan",
+      "template": "Templat"
+    },
+    "error": {
+      "forbidden": "Anda tiada akses untuk tindakan ini.",
+      "validation": "Sesetengah medan tidak sah.",
+      "not_found": "Tidak dijumpai. Mungkin sudah dipadam.",
+      "invalid_plan": "Pelan itu tidak tersedia.",
+      "same_plan": "Majlis sudah menggunakan pelan itu.",
+      "invalid_status": "Tidak boleh dilakukan pada status semasa.",
+      "confirm": "Slug yang ditaip tidak sepadan.",
+      "has_payments": "Majlis ini mempunyai bayaran dan tidak boleh dipadam.",
+      "free_required": "Pelan Percuma mesti kekal aktif dan berharga RM 0.",
+      "code_taken": "Kod templat itu sudah digunakan.",
+      "last_active_template": "Sekurang-kurangnya satu templat mesti kekal aktif."
+    }
   },
   "event": {
     "notFound": "Majlis tidak dijumpai",
@@ -372,5 +589,29 @@
     "csv": "Muat turun CSV",
     "xlsx": "Muat turun Excel",
     "noCard": "Terbitkan kad jemputan dengan RSVP dibuka untuk mula menerima jawapan."
+  },
+  "report": {
+    "link": "Laporkan majlis ini",
+    "title": "Laporkan majlis ini",
+    "intro": "Beritahu kami apa masalahnya. Anda tidak perlu memberi nama atau maklumat hubungan.",
+    "reasonLegend": "Apakah masalahnya?",
+    "reasons": {
+      "SEXUAL": "Kandungan seksual",
+      "VIOLENCE": "Keganasan",
+      "HATE": "Kebencian atau gangguan",
+      "SCAM": "Penipuan atau spam",
+      "PRIVACY": "Privasi: gambar atau data saya dikongsi tanpa kebenaran saya",
+      "COPYRIGHT": "Hak cipta: karya saya digunakan tanpa kebenaran",
+      "OTHER": "Perkara lain"
+    },
+    "detailsLabel": "Butiran (pilihan)",
+    "detailsHint": "Sehingga 1000 aksara. Jangan sertakan maklumat peribadi.",
+    "submit": "Hantar laporan",
+    "thanksTitle": "Terima kasih",
+    "thanksBody": "Kami telah menerima laporan anda dan akan menyemaknya.",
+    "errors": {
+      "validation": "Sila pilih satu sebab. Butiran boleh sehingga 1000 aksara.",
+      "rate_limited": "Terlalu banyak laporan, cuba lagi kemudian."
+    }
   }
 }

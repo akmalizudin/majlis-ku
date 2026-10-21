@@ -29,7 +29,7 @@ test("host signs in with a magic link; a host cannot open admin", async ({ page 
 test("admin email can open the admin panel", async ({ page }) => {
   await signInAs(page, "admin@majlisku.test");
   await page.goto("/admin");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Panel admin");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ringkasan");
 });
 
 test("guest event page shows the demo event", async ({ page }) => {

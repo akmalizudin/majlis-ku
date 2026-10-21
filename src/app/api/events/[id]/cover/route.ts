@@ -7,6 +7,7 @@ import { detectMime, isAllowedMime } from "@/server/media/file-check";
 import { processCover } from "@/server/media/images";
 import { coverKey } from "@/server/media/keys";
 import { storage } from "@/server/media/storage";
+import { canEditEvent } from "@/server/moderation/rules";
 import { KIND_MAX_BYTES } from "@/server/plans/limits";
 
 export const runtime = "nodejs";
@@ -15,6 +16,7 @@ export const runtime = "nodejs";
 export const POST = handle(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const { event } = await requireEventMemberApi(id);
+  if (!canEditEvent(event.memberRole)) throw new ApiError("forbidden", 403);
 
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
@@ -42,6 +44,7 @@ export const POST = handle(async (request: Request, { params }: { params: Promis
 export const DELETE = handle(async (_request: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const { event } = await requireEventMemberApi(id);
+  if (!canEditEvent(event.memberRole)) throw new ApiError("forbidden", 403);
   if (event.coverKey) await storage().deleteObject(event.coverKey);
   await db.event.update({ where: { id: event.id }, data: { coverKey: null } });
   return NextResponse.json({ ok: true });

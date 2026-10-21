@@ -1,6 +1,8 @@
 import "server-only";
-import { Prisma, type EventMemberRole } from "@prisma/client";
+import { Prisma, type EventMemberRole, type UserRole } from "@prisma/client";
+import { env } from "@/lib/env";
 import type { EventFormInput, EventSettingsInput } from "@/lib/schemas/event";
+import { canAccessAdmin } from "@/server/auth/roles";
 import { db } from "@/server/db";
 import { hashPin } from "@/server/guests/pin";
 import { computePurgeAt } from "./retention";
@@ -65,13 +67,13 @@ export type MemberEvent = NonNullable<Awaited<ReturnType<typeof getEventForMembe
  * The event if `userId` is its owner or co-host (admins see every event), else null.
  * Callers turn null into a 404 so outsiders cannot tell whether an event exists.
  */
-export async function getEventForMember(eventId: string, user: { id: string; role: string }) {
+export async function getEventForMember(eventId: string, user: { id: string; role: UserRole; email?: string | null }) {
   const event = await db.event.findUnique({
     where: { id: eventId },
     include: { plan: true, members: { where: { userId: user.id }, select: { role: true } } },
   });
   if (!event) return null;
-  const role: EventMemberRole | "ADMIN" | undefined = event.members[0]?.role ?? (user.role === "ADMIN" ? "ADMIN" : undefined);
+  const role: EventMemberRole | "ADMIN" | undefined = event.members[0]?.role ?? (canAccessAdmin(user, env().ADMIN_EMAILS) ? "ADMIN" : undefined);
   if (!role) return null;
   return { ...event, memberRole: role };
 }

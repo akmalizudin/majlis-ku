@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { canDeleteEvent, canManageMembers, canModerate, nextModeration } from "@/server/moderation/rules";
+import { canDeleteEvent, canEditEvent, canManageMembers, canModerate, nextModeration } from "@/server/moderation/rules";
 
 describe("nextModeration", () => {
   it("approves only waiting items", () => {
@@ -21,17 +21,27 @@ describe("nextModeration", () => {
 });
 
 describe("roles", () => {
-  it("lets owners, co-hosts and admins moderate", () => {
+  it("lets owners and co-hosts moderate", () => {
     expect(canModerate("OWNER")).toBe(true);
     expect(canModerate("COHOST")).toBe(true);
-    expect(canModerate("ADMIN")).toBe(true);
   });
 
-  it("lets only owners and admins manage members and delete the event", () => {
+  it("lets only owners manage members and delete the event", () => {
     expect(canManageMembers("OWNER")).toBe(true);
-    expect(canManageMembers("ADMIN")).toBe(true);
     expect(canManageMembers("COHOST")).toBe(false);
     expect(canDeleteEvent("OWNER")).toBe(true);
     expect(canDeleteEvent("COHOST")).toBe(false);
+  });
+
+  it("lets owners and co-hosts edit the event", () => {
+    expect(canEditEvent("OWNER")).toBe(true);
+    expect(canEditEvent("COHOST")).toBe(true);
+  });
+
+  it("makes admins read-only on host dashboards", () => {
+    expect(canModerate("ADMIN")).toBe(false);
+    expect(canManageMembers("ADMIN")).toBe(false);
+    expect(canDeleteEvent("ADMIN")).toBe(false);
+    expect(canEditEvent("ADMIN")).toBe(false);
   });
 });

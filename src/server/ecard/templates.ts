@@ -14,3 +14,8 @@ export type TemplateStyle = z.output<typeof templateStyleSchema>;
 export function templateStyle(defaults: unknown): TemplateStyle {
   return templateStyleSchema.parse(typeof defaults === "object" && defaults !== null ? defaults : {});
 }
+
+/** A card may keep a template an admin has since deactivated, but cannot switch to one. */
+export function templateUsable(template: { id: string; active: boolean } | null, currentTemplateId: string | null): boolean {
+  return template !== null && (template.active || template.id === currentTemplateId);
+}

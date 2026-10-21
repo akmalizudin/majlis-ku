@@ -27,10 +27,11 @@ export default async function GuestGalleryPage({
   if (!context || context.event.galleryVisibility !== "GUESTS" || !context.pinOk) notFound();
   const { event } = context;
   const query = galleryQuerySchema.parse(await searchParams);
-  const [t, tg, tc, labels, page] = await Promise.all([
+  const [t, tg, tc, tr, labels, page] = await Promise.all([
     getTranslations("guest"),
     getTranslations("gallery"),
     getTranslations("common"),
+    getTranslations("report"),
     galleryLabels(),
     listGallery(event.id, query, "guest"),
   ]);
@@ -73,6 +74,11 @@ export default async function GuestGalleryPage({
           </div>
         ) : null}
       </div>
+      <p className="mt-8 text-center">
+        <Link href={`/${slug}/report`} className="inline-flex min-h-11 items-center text-sm text-ink/60 underline">
+          {tr("link")}
+        </Link>
+      </p>
     </main>
   );
 }

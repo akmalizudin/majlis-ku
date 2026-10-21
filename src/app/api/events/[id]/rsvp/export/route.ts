@@ -1,5 +1,6 @@
 import { requireEventMemberApi } from "@/server/events/access";
-import { handle } from "@/server/http";
+import { ApiError, handle } from "@/server/http";
+import { canEditEvent } from "@/server/moderation/rules";
 import { rsvpCsv, rsvpXlsx } from "@/server/rsvp/export";
 import { listRsvps } from "@/server/rsvp/service";
 
@@ -10,6 +11,7 @@ export const dynamic = "force-dynamic";
 export const GET = handle(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const { event } = await requireEventMemberApi(id);
+  if (!canEditEvent(event.memberRole)) throw new ApiError("forbidden", 403);
   const search = new URL(request.url).searchParams;
   const locale = search.get("locale") === "en" ? "en" : "ms";
   const rows = await listRsvps(event.id);

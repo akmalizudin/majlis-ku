@@ -5,6 +5,10 @@ export function isAdminEmail(email: string | null | undefined, adminEmails: read
   return adminEmails.includes(email.trim().toLowerCase());
 }
 
-export function canAccessAdmin(user: { role: UserRole } | null | undefined): boolean {
-  return user?.role === "ADMIN";
+/** The ADMIN role alone is not enough: the email must still be in ADMIN_EMAILS, so removing it revokes access. */
+export function canAccessAdmin(
+  user: { role: UserRole; email?: string | null } | null | undefined,
+  adminEmails: readonly string[],
+): boolean {
+  return user?.role === "ADMIN" && isAdminEmail(user.email, adminEmails);
 }

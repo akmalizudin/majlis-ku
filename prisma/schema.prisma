@@ -30,7 +30,8 @@ enum EventType {
 enum EventStatus {
   DRAFT
   ACTIVE
-  ARCHIVED // retention ended, media purged
+  ARCHIVED  // retention ended, media purged
+  SUSPENDED // set by an admin; hidden from guests, reversible
 }
 
 enum GalleryVisibility {
@@ -75,6 +76,34 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum ReportReason {
+  SEXUAL
+  VIOLENCE
+  HATE
+  SCAM
+  PRIVACY
+  COPYRIGHT
+  OTHER
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+enum AuditAction {
+  EVENT_PLAN_CHANGED
+  EVENT_SUSPENDED
+  EVENT_UNSUSPENDED
+  EVENT_DELETED
+  REPORT_RESOLVED
+  REPORT_DISMISSED
+  PLAN_UPDATED
+  TEMPLATE_CREATED
+  TEMPLATE_UPDATED
+}
+
 // ---------- Auth (Auth.js Prisma adapter) ----------
 
 model User {
@@ -92,6 +121,9 @@ model User {
   sessions      Session[]
   memberships   EventMember[]
   payments      Payment[]
+
+  reportsHandled AbuseReport[] @relation("ReportsHandled")
+  auditEntries   AuditLog[]    @relation("AuditActor")
 }
 
 model Account {
@@ -197,6 +229,7 @@ model Event {
   planId            String
   planActivatedAt   DateTime?
   purgeAt           DateTime?         // set from plan retention; purge job deletes media after this
+  suspendedAt       DateTime?
   uploadCount       Int               @default(0)
   storageBytes      BigInt            @default(0)
   createdAt         DateTime          @default(now())
@@ -210,6 +243,7 @@ model Event {
   rsvps    Rsvp[]
   card     ECard?
   payments Payment[]
+  reports  AbuseReport[]
 
   @@index([status, purgeAt])
 }
@@ -345,4 +379,37 @@ model Payment {
   plan  Plan  @relation(fields: [planId], references: [id])
 
   @@index([status, createdAt])
+}
+// ---------- Admin: abuse reports and audit log ----------
+
+model AbuseReport {
+  id          String       @id @default(cuid())
+  eventId     String
+  reason      ReportReason
+  details     String?      // guest-written, max 1000 chars; no contact details asked
+  status      ReportStatus @default(OPEN)
+  handledById String?
+  handledAt   DateTime?
+  createdAt   DateTime     @default(now())
+
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  handledBy User? @relation("ReportsHandled", fields: [handledById], references: [id], onDelete: SetNull)
+
+  @@index([status, createdAt])
+  @@index([eventId])
+}
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  actorId    String?
+  action     AuditAction
+  targetType String      // "event" | "report" | "plan" | "template"
+  targetId   String      // no foreign key: the target may be deleted later
+  details    Json        // ids, slugs, codes, old and new values (numbers and strings only, no BigInt); never guest names or messages
+  createdAt  DateTime    @default(now())
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([targetType, targetId])
 }

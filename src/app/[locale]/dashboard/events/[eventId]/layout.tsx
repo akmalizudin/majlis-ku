@@ -48,6 +48,16 @@ export default async function EventLayout({
             ]}
           />
         </div>
+        {event.status === "SUSPENDED" ? (
+          <p role="status" className="mt-4 rounded-2xl bg-amber-100 p-4 text-sm text-amber-900">
+            {t("suspendedBanner")}
+          </p>
+        ) : null}
+        {event.memberRole === "ADMIN" ? (
+          <p role="status" className="mt-4 rounded-2xl bg-white p-4 text-sm text-ink/70">
+            {t("adminReadOnly")}
+          </p>
+        ) : null}
         <div className="mt-6">{children}</div>
       </main>
     </>

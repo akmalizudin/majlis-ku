@@ -23,7 +23,9 @@ export function sseResponse(request: Request, eventId: string, transform: (messa
 
       const unsubscribe = bus.subscribe(eventId, (message) => {
         const out = transform(message);
-        if (out) send(out.type, out);
+        if (!out) return;
+        send(out.type, out);
+        if (out.type === "closed") cleanup();
       });
       const heartbeat = setInterval(() => write(": ping\n\n"), HEARTBEAT_MS);
       cleanup = () => {

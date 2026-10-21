@@ -31,3 +31,15 @@ export async function signInAs(page: Page, email: string): Promise<void> {
   await page.goto(await latestSignInLink(email, started));
   await page.waitForURL(/dashboard/);
 }
+
+/** Sign in as `email`, create an event through the UI, and return its id and guest slug. */
+export async function createEventAs(page: Page, email: string, title = "Majlis Ujian"): Promise<{ eventId: string; slug: string }> {
+  await signInAs(page, email);
+  await page.getByRole("link", { name: "+ Majlis baharu" }).click();
+  await page.getByLabel("Tajuk majlis").fill(title);
+  await page.getByLabel("Nama tuan rumah / pasangan").fill(`Tuan Rumah ${Date.now()}`);
+  await page.getByRole("button", { name: "Cipta majlis" }).click();
+  await page.waitForURL(/\/dashboard\/events\/[a-z0-9]+$/);
+  const url = (await page.getByTestId("event-url").textContent())!.trim();
+  return { eventId: page.url().split("/").pop()!, slug: new URL(url).pathname.slice(1) };
+}

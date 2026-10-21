@@ -76,3 +76,17 @@ describe("checkUploadAllowed", () => {
     expect(checkUploadAllowed(premium, usage, { kind: "VIDEO", sizeBytes: MB, durationSec: 60 }).ok).toBe(true);
   });
 });
+
+// Characterization for an admin plan change: the limits are read from the event's current plan on every upload.
+describe("checkUploadAllowed after an admin plan change", () => {
+  it("a Premium event with 150 uploads moved to Free gets limit_reached", () => {
+    expect(checkUploadAllowed(free, { ...usage, uploadCount: 150 }, { kind: "PHOTO", sizeBytes: MB })).toEqual({
+      ok: false,
+      code: "limit_reached",
+    });
+  });
+
+  it("a Free event at 100 uploads moved to Premium accepts the next upload", () => {
+    expect(checkUploadAllowed(premium, { ...usage, uploadCount: 100 }, { kind: "PHOTO", sizeBytes: MB })).toEqual({ ok: true });
+  });
+});

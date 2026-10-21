@@ -10,7 +10,7 @@ import { processCover } from "@/server/media/images";
 import { assertSafeKey } from "@/server/media/keys";
 import { MEDIA_URL_TTL_SEC, storage } from "@/server/media/storage";
 import { KIND_MAX_BYTES } from "@/server/plans/limits";
-import { templateStyle } from "./templates";
+import { templateStyle, templateUsable } from "./templates";
 
 const MAX_PHOTOS = 3;
 const MUSIC_MAX_BYTES = 10 * 1024 * 1024;
@@ -39,8 +39,10 @@ async function ensureCard(eventId: string) {
 }
 
 export async function saveCard(eventId: string, input: CardInput) {
-  const template = await db.template.findFirst({ where: { id: input.templateId, active: true } });
-  if (!template) throw new ApiError("invalid_template", 400);
+  // Check before ensureCard so a rejected save never creates a card row.
+  const existing = await db.eCard.findUnique({ where: { eventId } });
+  const template = await db.template.findUnique({ where: { id: input.templateId } });
+  if (!templateUsable(template, existing?.templateId ?? null)) throw new ApiError("invalid_template", 400);
   const card = await ensureCard(eventId);
   const stored = parseCardContent(card.content);
   const { templateId, published, ...content } = input;

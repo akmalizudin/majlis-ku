@@ -2,6 +2,7 @@ import "server-only";
 import { db } from "@/server/db";
 import { eventPrefix } from "@/server/media/keys";
 import { storage } from "@/server/media/storage";
+import { bus } from "@/server/realtime/bus";
 import { normalizeInviteEmail } from "./members-rules";
 
 export async function listMembers(eventId: string) {
@@ -43,5 +44,6 @@ export async function deleteEventCompletely(eventId: string): Promise<DeleteResu
   await storage().deletePrefix(eventPrefix(eventId));
   // Uploads, wishes, RSVPs, guests, members and the e-card go with it (onDelete: Cascade).
   await db.event.delete({ where: { id: eventId } });
+  bus.publish(eventId, { type: "closed" }); // ends open guest streams, whoever deleted
   return { ok: true };
 }
