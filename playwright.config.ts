@@ -1,4 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
+import { CRON_SECRET } from "./tests/e2e/cron-secret";
 
 const PORT = Number(process.env.E2E_PORT ?? 3100);
 
@@ -28,6 +29,6 @@ export default defineConfig({
     url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
-    env: { AUTH_URL: `http://localhost:${PORT}`, NEXT_PUBLIC_APP_URL: `http://localhost:${PORT}` },
+    env: { AUTH_URL: `http://localhost:${PORT}`, NEXT_PUBLIC_APP_URL: `http://localhost:${PORT}`, CRON_SECRET },
   },
 });

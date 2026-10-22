@@ -37,7 +37,7 @@ export default async function HostGalleryPage({
     { status: "pending" as const, label: `${tm("statusPending")}${waiting ? ` (${waiting})` : ""}` },
     { status: "hidden" as const, label: tm("statusHidden") },
   ];
-  const canMod = canModerate(event.memberRole); // admins who are not members are read-only here (export included)
+  const canMod = canModerate(event); // admins who are not members are read-only here (export included)
   const download = "inline-flex min-h-11 items-center rounded-full border border-ink/20 bg-white px-4 text-sm font-medium";
 
   return (

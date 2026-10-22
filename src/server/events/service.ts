@@ -5,7 +5,7 @@ import type { EventFormInput, EventSettingsInput } from "@/lib/schemas/event";
 import { canAccessAdmin } from "@/server/auth/roles";
 import { db } from "@/server/db";
 import { hashPin } from "@/server/guests/pin";
-import { computePurgeAt } from "./retention";
+import { computePurgeAt, nextPurgeAt } from "./retention";
 import { isReservedSlug, makeSlug } from "./slug";
 
 /** New events start on the Free plan. An admin can change the plan (payments are deferred). */
@@ -37,20 +37,21 @@ export async function createEvent(userId: string, input: EventFormInput) {
 
 export async function updateEvent(eventId: string, input: EventFormInput) {
   const event = await db.event.findUniqueOrThrow({ where: { id: eventId }, include: { plan: true } });
-  return db.event.update({
-    where: { id: eventId },
-    data: { ...input, purgeAt: computePurgeAt({ startsAt: input.startsAt, retentionDays: event.plan.retentionDays }) },
+  // The status guard stops an edit that lands after the purge's claim; count 0 means nothing was written.
+  return db.event.updateMany({
+    where: { id: eventId, status: { not: "ARCHIVED" } },
+    data: { ...input, purgeAt: nextPurgeAt(event, input.startsAt, event.plan.retentionDays) },
   });
 }
 
 export async function updateEventSettings(eventId: string, settings: EventSettingsInput & { clearPin?: boolean }) {
-  const data: Prisma.EventUpdateInput = {
+  const data: Prisma.EventUpdateManyMutationInput = {
     galleryVisibility: settings.galleryVisibility,
     requireApproval: settings.requireApproval,
   };
   if (settings.pin) data.pinHash = await hashPin(settings.pin);
   else if (settings.clearPin) data.pinHash = null;
-  return db.event.update({ where: { id: eventId }, data });
+  return db.event.updateMany({ where: { id: eventId, status: { not: "ARCHIVED" } }, data });
 }
 
 export async function listEventsForUser(userId: string) {

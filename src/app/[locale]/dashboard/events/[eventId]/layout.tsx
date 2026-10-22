@@ -4,7 +4,7 @@ import { EventNav } from "@/components/host/event-nav";
 import { SiteHeader } from "@/components/site-header";
 import { getPathname, Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { formatEventDate } from "@/lib/dates";
+import { formatEventDate, formatEventDay } from "@/lib/dates";
 import { requireEventMember } from "@/server/events/access";
 
 export default async function EventLayout({
@@ -51,6 +51,11 @@ export default async function EventLayout({
         {event.status === "SUSPENDED" ? (
           <p role="status" className="mt-4 rounded-2xl bg-amber-100 p-4 text-sm text-amber-900">
             {t("suspendedBanner")}
+          </p>
+        ) : null}
+        {event.status === "ARCHIVED" ? (
+          <p role="status" className="mt-4 rounded-2xl bg-amber-100 p-4 text-sm text-amber-900">
+            {event.archivedAt ? t("archivedBanner", { date: formatEventDay(event.archivedAt, locale as Locale) }) : t("archivingBanner")}
           </p>
         ) : null}
         {event.memberRole === "ADMIN" ? (

@@ -48,7 +48,8 @@
     "signedInAs": "Log masuk sebagai {email}",
     "newEvent": "Majlis baharu",
     "items": "{count, plural, other {# item}}",
-    "cohost": "Tuan rumah bersama"
+    "cohost": "Tuan rumah bersama",
+    "archived": "Diarkibkan"
   },
   "eventTypes": {
     "WEDDING": "Perkahwinan",
@@ -86,6 +87,8 @@
     "card": "Kad jemputan",
     "rsvp": "RSVP",
     "suspendedBanner": "Majlis ini telah digantung oleh Majlis Ku. Tetamu tidak dapat membukanya.",
+    "archivedBanner": "Tempoh simpanan tamat. Gambar, video, suara, ucapan dan RSVP tetamu telah dipadam pada {date}.",
+    "archivingBanner": "Tempoh simpanan tamat. Data tetamu sedang dipadam.",
     "adminReadOnly": "Anda melihat majlis ini sebagai admin. Paparan ini baca sahaja; perubahan dibuat dari panel admin."
   },
   "eventOverview": {
@@ -165,6 +168,7 @@
     "voice": "Suara",
     "wish": "Ucapan",
     "consent": "Dengan memuat naik, anda bersetuju gambar, video, suara dan ucapan anda dikongsi dengan tuan rumah majlis ini dan disimpan mengikut tempoh pelan mereka. Tuan rumah boleh memadam kandungan pada bila-bila masa.",
+    "consentPrivacyLink": "Baca Dasar Privasi",
     "consentAgree": "Saya faham dan bersetuju",
     "photoPick": "Pilih gambar",
     "photoHelp": "Boleh pilih beberapa gambar sekaligus.",
@@ -410,6 +414,7 @@
       "EVENT_SUSPENDED": "Majlis digantung",
       "EVENT_UNSUSPENDED": "Majlis dipulihkan",
       "EVENT_DELETED": "Majlis dipadam",
+      "EVENT_PURGED": "Dipadam automatik (tempoh simpanan tamat)",
       "REPORT_RESOLVED": "Laporan diselesaikan",
       "REPORT_DISMISSED": "Laporan diketepikan",
       "PLAN_UPDATED": "Pelan dikemas kini",
@@ -612,6 +617,117 @@
     "errors": {
       "validation": "Sila pilih satu sebab. Butiran boleh sehingga 1000 aksara.",
       "rate_limited": "Terlalu banyak laporan, cuba lagi kemudian."
+    }
+  },
+  "legal": {
+    "footer": {
+      "nav": "Maklumat undang-undang",
+      "privacy": "Privasi",
+      "terms": "Terma"
+    },
+    "privacy": {
+      "title": "Dasar Privasi",
+      "updated": "Dikemas kini 21 Oktober 2026",
+      "intro": "Majlis Ku ialah buku tetamu digital dan kad jemputan untuk majlis. Halaman ini menerangkan data yang kami simpan, kenapa, dan bagaimana anda boleh memadamnya.",
+      "controller": {
+        "title": "Siapa kami",
+        "body": "Majlis Ku dikendalikan oleh {controller}, beralamat di {address}. Kami menentukan bagaimana data peribadi anda digunakan dalam perkhidmatan ini."
+      },
+      "collected": {
+        "title": "Data yang kami simpan",
+        "body": "Kami hanya menyimpan apa yang perlu.",
+        "items": [
+          "Tetamu: nama paparan yang anda taip, dan token peranti dalam kuki. Hanya cincangan bergaram token itu disimpan, bukan token itu sendiri.",
+          "Kandungan yang anda hantar: gambar, video, mesej suara dan ucapan.",
+          "RSVP: nama, hadir atau tidak, bilangan orang, mesej, dan nombor telefon jika tuan rumah memintanya.",
+          "Laporan penyalahgunaan: sebab dan butiran yang anda tulis. Kami tidak meminta nama, emel atau telefon anda.",
+          "Tuan rumah: emel, nama dan gambar profil akaun (gambar profil hanya jika log masuk dengan Google), serta butiran majlis. Log masuk Google turut menyimpan token log masuk yang dikembalikan oleh Google.",
+          "Had kadar: nilai cincangan bergaram dan kiraan masa untuk menghalang penyalahgunaan. Kami tidak menyimpan alamat IP mentah."
+        ]
+      },
+      "purpose": {
+        "title": "Kenapa kami menggunakannya",
+        "body": "Untuk menjalankan buku tetamu dan kad jemputan: menunjukkan kandungan anda kepada tuan rumah, membolehkan anda mengubah RSVP anda, melindungi perkhidmatan daripada penyalahgunaan, dan membolehkan tuan rumah log masuk. Kami tidak menjual data anda dan tidak menggunakannya untuk iklan."
+      },
+      "access": {
+        "title": "Siapa boleh melihatnya",
+        "body": "Tuan rumah dan rakan tuan rumah sesuatu majlis melihat semua kandungan dan RSVP majlis itu. Tetamu lain hanya melihat galeri jika tuan rumah membukanya kepada tetamu. Pentadbir Majlis Ku boleh melihat laporan penyalahgunaan dan data majlis untuk sokongan dan moderasi. Media dihantar melalui pautan bertandatangan yang tamat dalam masa sejam. Kad jemputan yang diterbitkan boleh dilihat oleh sesiapa yang mempunyai pautannya, termasuk nama tuan rumah, gambar, tempat dan tarikh."
+      },
+      "retention": {
+        "title": "Berapa lama kami menyimpannya",
+        "body": "Kandungan tetamu disimpan sehingga tempoh simpanan pelan majlis berakhir, dikira dari tarikh majlis, atau dari hari majlis dicipta, tarikhnya terakhir diubah atau pelannya ditukar, mana-mana yang terkini. Pelan yang ada sekarang:",
+        "plan": "{name}: {days} hari",
+        "after": "Selepas itu, gambar, video, suara, ucapan, RSVP, rekod tetamu, laporan dan kad jemputan dipadam secara automatik dan tidak boleh dipulihkan. Butiran asas majlis (tajuk, nama tuan rumah, tarikh, tempat), rekod pembayaran dan log audit kekal. Salinan yang sudah dimuat turun ke pelayar boleh bertahan sehingga sejam."
+      },
+      "deletion": {
+        "title": "Memadam data anda",
+        "body": "Tuan rumah boleh memadam mana-mana gambar, video, suara atau ucapan, atau seluruh majlis, pada bila-bila masa dari papan pemuka. Jika anda seorang tetamu dan mahu kandungan anda dipadam, minta tuan rumah memadamnya atau hubungi kami di {email}. Tuan rumah boleh meminta emel hubungan di atas memadam akaun mereka. Butiran majlis disimpan sehingga tuan rumah atau pentadbir memadam majlis itu."
+      },
+      "cookies": {
+        "title": "Kuki dan storan setempat",
+        "body": "Kami tidak menggunakan kuki pengiklanan atau penjejak.",
+        "items": [
+          "mk_device: mengenal pasti peranti tetamu untuk satu majlis. Tahan sehingga setahun.",
+          "Kuki PIN: hanya jika majlis dilindungi PIN, supaya anda tidak perlu memasukkannya semula.",
+          "Kuki log masuk (sesi dan keselamatan, seperti CSRF dan URL panggilan balik): untuk tuan rumah sahaja. Semuanya kuki pihak pertama dan perlu untuk log masuk.",
+          "NEXT_LOCALE: mengingati bahasa pilihan anda.",
+          "mk_consent dan mk_name dalam storan setempat pelayar: mengingati persetujuan dan nama anda pada peranti ini."
+        ]
+      },
+      "contact": {
+        "title": "Hubungi kami",
+        "body": "Soalan atau permintaan mengenai data anda: {email}, {address}."
+      }
+    },
+    "terms": {
+      "title": "Terma Perkhidmatan",
+      "updated": "Dikemas kini 21 Oktober 2026",
+      "intro": "Dengan menggunakan Majlis Ku, anda bersetuju dengan terma ini.",
+      "service": {
+        "title": "Perkhidmatan",
+        "body": "Majlis Ku ialah buku tetamu digital (galeri langsung) dan kad jemputan dengan RSVP untuk majlis. Perkhidmatan ini disediakan oleh {controller}."
+      },
+      "hostDuties": {
+        "title": "Tanggungjawab tuan rumah",
+        "body": "Jika anda mencipta majlis, anda bertanggungjawab untuk:",
+        "items": [
+          "Memastikan anda berhak menggunakan kandungan yang anda muat naik.",
+          "Memberitahu tetamu bahawa gambar, video, suara dan ucapan mereka dikongsi dengan anda dan disimpan mengikut pelan majlis.",
+          "Menggunakan perkhidmatan secara sah, serta menjaga akaun dan PIN anda."
+        ]
+      },
+      "prohibited": {
+        "title": "Kandungan yang dilarang",
+        "body": "Kandungan berikut tidak dibenarkan, dan sesiapa boleh melaporkannya:",
+        "items": [
+          "Kandungan seksual.",
+          "Keganasan.",
+          "Kebencian atau gangguan.",
+          "Penipuan atau spam.",
+          "Gambar atau data orang lain yang dikongsi tanpa kebenaran mereka.",
+          "Karya orang lain yang digunakan tanpa kebenaran (hak cipta)."
+        ]
+      },
+      "suspension": {
+        "title": "Penggantungan dan pemadaman",
+        "body": "Pentadbir boleh menggantung atau memadam majlis atau kandungan yang melanggar terma ini atau undang-undang, selepas laporan atau semakan. Tuan rumah boleh memadam majlis mereka sendiri pada bila-bila masa."
+      },
+      "plans": {
+        "title": "Pelan dan tempoh simpanan",
+        "body": "Setiap majlis mempunyai satu pelan yang menetapkan had muat naik, saiz fail dan tempoh simpanan (lihat Dasar Privasi). Had dikuatkuasakan oleh pelayan. Apabila tempoh simpanan tamat, kandungan tetamu dipadam secara kekal. Muat turun eksport anda sebelum itu."
+      },
+      "warranty": {
+        "title": "Tiada jaminan",
+        "body": "Perkhidmatan disediakan seadanya. Kami berusaha memastikan ia berfungsi, tetapi tidak menjamin ia bebas gangguan atau ralat. Simpan salinan gambar asal anda sendiri. Setakat yang dibenarkan undang-undang, kami tidak bertanggungjawab atas kehilangan kandungan atau kerugian tidak langsung."
+      },
+      "law": {
+        "title": "Undang-undang yang terpakai",
+        "body": "Terma ini tertakluk kepada undang-undang Malaysia. Pertikaian diselesaikan di mahkamah Malaysia."
+      },
+      "contact": {
+        "title": "Hubungi kami",
+        "body": "Soalan atau aduan: {email}, {address}."
+      }
     }
   }
 }

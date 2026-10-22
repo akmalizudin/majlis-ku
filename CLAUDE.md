@@ -83,7 +83,7 @@ Current layout (`docs/specs/phase-1-setup.md` has the original tree):
 
 ```
 src/app/                 Next.js App Router: [locale]/[slug] (guest), [locale]/i/[slug] (card), [locale]/dashboard, [locale]/admin, api/
-src/server/              server-only domain modules: events, uploads, wishes, rsvp, plans, media, auth, admin, reports, ...
+src/server/              server-only domain modules: events, uploads, wishes, rsvp, plans, media, auth, admin, reports, retention, security, ...
 src/server/payments/     PaymentProvider interface and one adapter per gateway (phase 6, not created yet)
 src/lib/                 isomorphic helpers: zod schemas, money (sen), dates (Asia/Kuala_Lumpur), i18n
 src/components/          UI; guest components kept light (no heavy client libraries)
@@ -113,7 +113,8 @@ scripts/                 worktree-add/cleanup, skills.mjs (sync and parity check
 | 5 E-card and RSVP: 3 templates, builder with photos and music, public card at `/i/{slug}` with countdown, maps, calendar, OG image, RSVP with edit, list with CSV and Excel | done |
 | 6 Payments and plans | deferred by the developer (plans and limits still enforced) |
 | 7 Admin panel: overview, events (plan change, suspend, delete), users, abuse reports with a guest report form, plans and prices, templates, audit log; admins read-only on host dashboards | done |
-| 8 Hardening | not started |
+| 8a Local hardening: retention purge job, shared Postgres rate limiter, privacy and terms pages, security headers, `/api/health`, e2e for these | done |
+| 8b Deployment hardening: Dockerfile, S3/R2 `StorageDriver`, deployment guide, client IP trust behind the proxy, HSTS, PIN guessing across devices (per-IP limit) | next |
 
 ## Commands
 
@@ -137,9 +138,11 @@ Sign in locally: enter any email on `/signin`; with `EMAIL_SERVER` empty, the ma
 
 Try it on a phone on the same Wi-Fi: set `NEXT_PUBLIC_APP_URL` and `AUTH_URL` in `.env` to `http://<your-LAN-IP>:3000`, run `npm run dev -- -H 0.0.0.0`, and scan the QR code from the event page.
 
+`GET /api/health` returns 200 `{ "status": "ok" }` when the database answers, 503 otherwise.
+
 `NEXT_PUBLIC_APP_URL` is read at runtime through `env()` (QR codes, share links, `metadataBase`); never read `process.env.NEXT_PUBLIC_*` directly in server code, because Next.js freezes it at build time.
 
-Gotchas: do not run `next dev` and `next build` at the same time (they share `.next/`); stop old `next start` processes before e2e, or Playwright reuses a stale server. If an installed PostgreSQL already uses port 5432, that is fine: the embedded one uses 5433. If something else holds 5433 (for example another project's Docker container), change the port in `DATABASE_URL` in your `.env` (for example 5434); `db:start` reads it from there.
+Gotchas: do not run `next dev` and `next build` at the same time (they share `.next/`); stop old `next start` processes before e2e, or Playwright reuses a stale server (one started without `CRON_SECRET` makes the cron e2e fail with 404). If an installed PostgreSQL already uses port 5432, that is fine: the embedded one uses 5433. If something else holds 5433 (for example another project's Docker container), change the port in `DATABASE_URL` in your `.env` (for example 5434); `db:start` reads it from there.
 
 ## Rules
 
@@ -159,8 +162,10 @@ Gotchas: do not run `next dev` and `next build` at the same time (they share `.n
 ## Privacy (PDPA Malaysia)
 
 - Consent text on the guest upload screen; the upload button stays disabled until it is shown.
-- The host can delete the whole event and all its media; a purge job deletes media when retention ends.
-- No raw IP addresses stored; rate-limit keys use a salted hash.
+- The host can delete the whole event and all its media.
+- Purge: when an event's retention ends (`Event.purgeAt`: plan retention counted from the event date, or from creation, the last date change or a plan change if later), the event is archived: its files and guest records (uploads, wishes, RSVPs, guests, abuse reports, e-card) are deleted and the event row is kept as `ARCHIVED`, read-only. It runs hourly inside the server (`src/server/retention/`) and on `POST /api/cron/purge` with `Authorization: Bearer <CRON_SECRET>` (404 when `CRON_SECRET` is unset). A host edit moves `purgeAt` only when the event date changes.
+- No raw IP addresses stored; rate-limit keys use a salted hash. Rate limits live in the `RateLimit` table, so every server shares them.
+- `src/lib/legal.ts` holds placeholders (`[NAMA SYARIKAT]`, `[EMEL]`, `[ALAMAT]`) shown on `/privacy` and `/terms`. Fill them and have a lawyer review both pages before launch.
 - Seed and test data are invented. No real guests' names, phone numbers, or photos in the repo.
 
 ## Secrets

@@ -17,7 +17,7 @@ export const POST = handle(async (request: Request, { params }: { params: Promis
   const { slug } = await params;
   const body = await readJson(request, bodySchema);
   const { event, guest, deviceHash } = await requireGuest(slug);
-  if (!limiters.uploadStart.hit(deviceHash).ok) throw new ApiError("rate_limited", 429);
+  if (!(await limiters.uploadStart.hit(deviceHash)).ok) throw new ApiError("rate_limited", 429);
   const target = await startUpload({ event, guest, ...body });
   return NextResponse.json(target, { status: 201 });
 });

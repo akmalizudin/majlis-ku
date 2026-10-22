@@ -73,7 +73,7 @@ export default async function EventOverviewPage({ params }: { params: Promise<{ 
         ) : (
           <p className="mt-2 text-sm text-ink/70">{t("noGallery")}</p>
         )}
-        {event.purgeAt ? <p className="mt-1 text-sm text-ink/70">{t("keptUntil", { date: formatEventDay(event.purgeAt, locale as Locale) })}</p> : null}
+        {event.purgeAt && event.status !== "ARCHIVED" ? <p className="mt-1 text-sm text-ink/70">{t("keptUntil", { date: formatEventDay(event.purgeAt, locale as Locale) })}</p> : null}
       </section>
     </div>
   );

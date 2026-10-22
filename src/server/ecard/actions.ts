@@ -13,7 +13,7 @@ export type SaveCardResult = { ok: true } | { ok: false; error: "validation" | "
 export async function saveCardAction(eventId: string, input: unknown): Promise<SaveCardResult> {
   const session = await auth();
   const event = session?.user?.id ? await getEventForMember(eventId, session.user) : null;
-  if (!event || !canModerate(event.memberRole)) return { ok: false, error: "forbidden" };
+  if (!event || !canModerate(event)) return { ok: false, error: "forbidden" };
   if (!event.plan.includesEcard) return { ok: false, error: "not_in_plan" };
   const parsed = cardInputSchema.safeParse(input);
   if (!parsed.success) {

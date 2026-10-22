@@ -46,12 +46,15 @@ const KNOWN_ERRORS = [
 
 export function GuestActions({
   slug,
+  privacyHref,
   needsPin,
   initialName,
   galleryHref,
   features,
 }: {
   slug: string;
+  /** Locale-aware path of the privacy page, built by the server page. */
+  privacyHref: string;
   needsPin: boolean;
   initialName: string | null;
   galleryHref: string | null;
@@ -278,6 +281,9 @@ export function GuestActions({
   const consentBox = (
     <div className="mt-4 rounded-2xl bg-cream p-4 text-sm text-ink/80">
       <p>{t("consent")}</p>
+      <a href={privacyHref} className="mt-1 inline-flex min-h-11 items-center underline">
+        {t("consentPrivacyLink")}
+      </a>
       <label className="mt-3 flex min-h-11 items-center gap-3 font-medium">
         <input type="checkbox" checked={consent} onChange={(e) => agree(e.target.checked)} className="size-5" />
         {t("consentAgree")}

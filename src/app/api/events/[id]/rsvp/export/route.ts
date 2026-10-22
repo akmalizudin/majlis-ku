@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const GET = handle(async (request: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const { event } = await requireEventMemberApi(id);
-  if (!canEditEvent(event.memberRole)) throw new ApiError("forbidden", 403);
+  if (!canEditEvent(event)) throw new ApiError("forbidden", 403);
   const search = new URL(request.url).searchParams;
   const locale = search.get("locale") === "en" ? "en" : "ms";
   const rows = await listRsvps(event.id);

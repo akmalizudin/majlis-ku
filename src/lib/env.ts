@@ -29,7 +29,7 @@ const schema = z.object({
   S3_BUCKET: optional,
   S3_ACCESS_KEY_ID: optional,
   S3_SECRET_ACCESS_KEY: optional,
-  CRON_SECRET: optional,
+  CRON_SECRET: z.string().trim().min(16).optional(),
 });
 
 export type Env = z.infer<typeof schema>;

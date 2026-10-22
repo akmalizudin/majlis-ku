@@ -1,31 +1,28 @@
-// Fixed-window rate limiter kept in process memory. Fine for one local server; a shared store
-// (Postgres or Redis) replaces it when the app runs on more than one instance (phase 8).
+import { db } from "@/server/db";
+import { rateLimitResult, type RateLimitResult } from "./rate-limit-rules";
 
-export type RateLimitResult = { ok: boolean; retryAfterSec: number };
-
-export function createRateLimiter({ limit, windowMs }: { limit: number; windowMs: number }) {
-  const windows = new Map<string, { start: number; count: number }>();
-
-  function hit(key: string, now = Date.now()): RateLimitResult {
-    const current = windows.get(key);
-    if (!current || now - current.start >= windowMs) {
-      windows.set(key, { start: now, count: 1 });
-      if (windows.size > 10_000) prune(now);
-      return { ok: true, retryAfterSec: 0 };
-    }
-    if (current.count >= limit) {
-      return { ok: false, retryAfterSec: Math.max(1, Math.ceil((current.start + windowMs - now) / 1000)) };
-    }
-    current.count += 1;
-    return { ok: true, retryAfterSec: 0 };
+// Fixed-window rate limiter stored in Postgres, so every server instance shares one count.
+// One atomic upsert per hit; a database error rejects the request instead of letting it through.
+export function createRateLimiter({ name, limit, windowMs }: { name: string; limit: number; windowMs: number }) {
+  async function hit(key: string): Promise<RateLimitResult> {
+    const now = new Date();
+    const windowEdge = new Date(now.getTime() - windowMs); // rows started at or before this are expired
+    const storedKey = `${name}:${key}`;
+    // The column is TIMESTAMP(3) without a zone: bind dates as UTC wall time so the session timezone cannot shift them.
+    const rows = await db.$queryRaw<{ count: number; windowStart: Date }[]>`
+      INSERT INTO "RateLimit" ("key", "windowStart", "count")
+      VALUES (${storedKey}, (${now}::timestamptz AT TIME ZONE 'UTC'), 1)
+      ON CONFLICT ("key") DO UPDATE SET
+        "windowStart" = CASE WHEN "RateLimit"."windowStart" <= (${windowEdge}::timestamptz AT TIME ZONE 'UTC') THEN (${now}::timestamptz AT TIME ZONE 'UTC') ELSE "RateLimit"."windowStart" END,
+        "count" = CASE WHEN "RateLimit"."windowStart" <= (${windowEdge}::timestamptz AT TIME ZONE 'UTC') THEN 1 ELSE "RateLimit"."count" + 1 END
+      RETURNING "count", "windowStart"`;
+    const row = rows[0];
+    if (!row) throw new Error("rate limit upsert returned no row"); // cannot happen; never fail open
+    return rateLimitResult(row, limit, windowMs, now);
   }
 
-  function prune(now: number) {
-    for (const [key, value] of windows) if (now - value.start >= windowMs) windows.delete(key);
-  }
-
-  function reset(key: string) {
-    windows.delete(key);
+  async function reset(key: string): Promise<void> {
+    await db.rateLimit.deleteMany({ where: { key: `${name}:${key}` } });
   }
 
   return { hit, reset };
@@ -35,10 +32,10 @@ const MINUTE = 60_000;
 
 // Shared limiters for the guest API. Keys are device hashes or salted IP hashes, never raw IPs.
 export const limiters = {
-  uploadStart: createRateLimiter({ limit: 120, windowMs: 10 * MINUTE }),
-  wish: createRateLimiter({ limit: 20, windowMs: 10 * MINUTE }),
-  guestJoin: createRateLimiter({ limit: 30, windowMs: 10 * MINUTE }),
-  pinAttempt: createRateLimiter({ limit: 5, windowMs: 10 * MINUTE }),
-  rsvp: createRateLimiter({ limit: 10, windowMs: 10 * MINUTE }),
-  report: createRateLimiter({ limit: 5, windowMs: 10 * MINUTE }),
+  uploadStart: createRateLimiter({ name: "uploadStart", limit: 120, windowMs: 10 * MINUTE }),
+  wish: createRateLimiter({ name: "wish", limit: 20, windowMs: 10 * MINUTE }),
+  guestJoin: createRateLimiter({ name: "guestJoin", limit: 30, windowMs: 10 * MINUTE }),
+  pinAttempt: createRateLimiter({ name: "pinAttempt", limit: 5, windowMs: 10 * MINUTE }),
+  rsvp: createRateLimiter({ name: "rsvp", limit: 10, windowMs: 10 * MINUTE }),
+  report: createRateLimiter({ name: "report", limit: 5, windowMs: 10 * MINUTE }),
 };

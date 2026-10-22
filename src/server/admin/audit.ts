@@ -9,7 +9,7 @@ export type AuditDetails = Prisma.InputJsonObject;
 
 export async function writeAudit(
   tx: Prisma.TransactionClient,
-  entry: { actorId: string; action: AuditAction; targetType: "event" | "report" | "plan" | "template"; targetId: string; details: AuditDetails },
+  entry: { actorId: string | null; action: AuditAction; targetType: "event" | "report" | "plan" | "template"; targetId: string; details: AuditDetails },
 ) {
   await tx.auditLog.create({ data: entry });
 }

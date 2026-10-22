@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Link } from "@/i18n/navigation";
 
@@ -31,6 +32,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </article>
         </section>
       </main>
+      <SiteFooter />
     </>
   );
 }

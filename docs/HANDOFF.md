@@ -4,7 +4,7 @@ Last updated: 2026-10-21. Read `CLAUDE.md` (or `AGENTS.md`) and `playbook.md` fi
 
 ## State
 
-Phases 0 to 5 and 7 are done (phase 7 on branch `feat/admin-panel` until it is merged). Phase 7 checks on 2026-10-21: lint, typecheck, 183 unit tests, build (guest routes 121 to 126 KB), `node scripts/skills.mjs check`, migrations and seed on a fresh database, and 19 of 20 Playwright e2e tests. The one failure, `media.spec.ts` (voice message), fails the same on `main`; see Gotchas.
+Phases 0 to 5, 7 and 8a are done (8a on branch `feat/infra-hardening` until it is merged). 8a adds the retention purge (hourly in-process and `POST /api/cron/purge`), the Postgres `RateLimit` table, `/privacy` and `/terms`, security headers and `/api/health`; see `docs/specs/phase-8-hardening.md`. Checks on 2026-10-21: 205 unit tests and 26 e2e tests all passing, including the voice test (`media.spec.ts`), which passed this time; see Gotchas. The legal pages still show placeholders in `src/lib/legal.ts` (`[NAMA SYARIKAT]`, `[EMEL]`, `[ALAMAT]`): fill them and get a legal review before launch.
 
 | Phase | State |
 | --- | --- |
@@ -16,7 +16,8 @@ Phases 0 to 5 and 7 are done (phase 7 on branch `feat/admin-panel` until it is m
 | 5 E-card and RSVP | done |
 | 6 Payments and plans | deferred by the developer (no gateway yet) |
 | 7 Admin panel | done |
-| 8 Hardening | **next** |
+| 8a Local hardening (purge, shared rate limiter, privacy and terms, headers, health) | done |
+| 8b Deployment hardening | **next** |
 
 ## Run it locally
 
@@ -33,7 +34,7 @@ Sign in: any email on `/signin`; the magic link is printed in the server log and
 
 ## What to build next
 
-1. **Phase 8: Hardening.** Retention purge job (`Event.purgeAt` is already set; media must be deleted from storage too, and the job must delete the event's `AbuseReport` rows when it archives an event, per `docs/specs/phase-7-admin.md` §6), shared rate limiter (the current one is in memory), privacy policy and terms pages (`privacy`, `terms` slugs are reserved), Dockerfile and deployment guide, S3/R2 `StorageDriver`.
+1. **Phase 8b: deployment hardening.** Needs the hosting choice first. Dockerfile and deployment guide; S3/R2 `StorageDriver`; how the client IP is derived behind the proxy (`x-forwarded-for` trust: `guestJoin` and `report` limits are keyed by IP and can be dodged by a client that sends its own header); HSTS; **PIN guessing across devices** (the PIN limit is 5 tries per device, so clearing cookies resets it; add a per-IP limit once IP trust is decided, not a per-event cap, which would lock real guests out at the venue). Also open: a shared realtime bus for more than one server, e2e in CI, a full Content-Security-Policy with nonces.
 2. **Phase 6: Payments**, only when the developer asks. Use a `PaymentProvider` interface; read `.claude/skills/payments-guard`.
 
 ## Gotchas (learned the hard way)
@@ -42,7 +43,10 @@ Sign in: any email on `/signin`; the magic link is printed in the server log and
 - Do not run `next dev` and `next build` at the same time (shared `.next/`). Stop old `next start` processes before `npm run test:e2e`, or Playwright reuses a stale server.
 - An installed PostgreSQL on port 5432 is fine; the embedded one uses 5433. If 5433 is taken (on the 2026-10-21 machine it was another project's Docker container), set another port in `DATABASE_URL` in `.env`, for example 5434.
 - Your npm version decides the lockfile shape: npm 10 drops the `libc` fields that npm 11 writes into `package-lock.json`. Do not commit that churn; `git checkout package-lock.json` after `npm install`.
-- `tests/e2e/media.spec.ts` (voice message) fails on a fresh Playwright Chromium download (`chromium_headless_shell-1248`): "Merakam…" never appears after "Mula rakam". It fails the same on `main` at 33b2ab1, so it is the fake microphone in that browser build, not app code. Still open.
+- `tests/e2e/media.spec.ts` (voice message) was flaky on a fresh Playwright Chromium download (`chromium_headless_shell-1248`): "Merakam…" never appeared after "Mula rakam", also on `main` at 33b2ab1, so it is the fake microphone in that browser build, not app code. It passed on 2026-10-21 in the 8a worktree; if it fails again, suspect the browser build first.
+- A fresh worktree needs `npm install` (not `npm ci`, with npm 10), then `git checkout package-lock.json`. Run `npx prisma generate` if typecheck says the Prisma client is stale.
+- The first start after migrating `hardening` purges any local event already past its `purgeAt` (files and guest rows deleted, event kept as `ARCHIVED`).
+- E2E setup: `tests/e2e/db.ts` is a Prisma fixture (reads `.env`), and `playwright.config.ts` sets `CRON_SECRET` for the test server. A stale `next start` on port 3100 started without `CRON_SECRET` makes the cron e2e return 404.
 - Admins are read-only on host dashboards (they can view, not change or export); every admin change goes through `/admin` and is in the audit log.
 - npm 11 blocks install scripts: new packages with install scripts need `npm approve-scripts <pkg>` (stored in `allowScripts` in `package.json`).
 - Read `NEXT_PUBLIC_APP_URL` through `env()` in server code, never `process.env.NEXT_PUBLIC_*` (frozen at build time).

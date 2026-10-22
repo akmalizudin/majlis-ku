@@ -26,7 +26,7 @@ async function memberEvent(eventId: string) {
 export async function moderateItemAction(input: z.input<typeof itemSchema>): Promise<{ ok: boolean }> {
   const { eventId, type, id, action } = itemSchema.parse(input);
   const event = await memberEvent(eventId);
-  if (!event || !canModerate(event.memberRole)) return { ok: false };
+  if (!event || !canModerate(event)) return { ok: false };
   const ok = await moderateItem(event.id, type, id, action);
   revalidatePath("/", "layout");
   return { ok };
@@ -34,7 +34,7 @@ export async function moderateItemAction(input: z.input<typeof itemSchema>): Pro
 
 export async function approveAllAction(eventId: string): Promise<{ count: number }> {
   const event = await memberEvent(z.string().min(1).parse(eventId));
-  if (!event || !canModerate(event.memberRole)) return { count: 0 };
+  if (!event || !canModerate(event)) return { count: 0 };
   const count = await approveAll(event.id);
   revalidatePath("/", "layout");
   return { count };
